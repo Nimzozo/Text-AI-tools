@@ -17,7 +17,10 @@
       </header>
 
       <main class="main-grid">
-        <div id="error-banner" class="error-banner" hidden role="alert" aria-live="polite"></div>
+        <div id="error-banner" class="error-banner" hidden role="alert" aria-live="polite">
+          <span class="error-message"></span>
+          <button id="error-dismiss" class="error-dismiss" aria-label="Dismiss error">✕</button>
+        </div>
         <section class="card auth-card">
           <div class="card-header">
             <p class="eyebrow">Authentication</p>

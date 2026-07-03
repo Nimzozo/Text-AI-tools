@@ -13,6 +13,7 @@ const outputArea = document.querySelector('#output-display');
 const copyButton = document.querySelector('#copy-button');
 const runButton = document.querySelector('#run-button');
 const errorBanner = document.querySelector('#error-banner');
+const errorDismiss = document.querySelector('#error-dismiss');
 const copyFeedback = document.querySelector('#copy-feedback');
 const textInput = document.querySelector('#input-text');
 const targetLanguageInput = document.querySelector('#target-language');
@@ -140,7 +141,14 @@ function handleClearApiKey() {
 function showError(message) {
   const text = message || 'Something went wrong. Please try again.';
   if (errorBanner) {
-    errorBanner.textContent = text;
+    // update or create the child span so dismiss button remains intact
+    let msg = errorBanner.querySelector('.error-message');
+    if (!msg) {
+      msg = document.createElement('span');
+      msg.className = 'error-message';
+      errorBanner.appendChild(msg);
+    }
+    msg.textContent = text;
     errorBanner.hidden = false;
     errorBanner.setAttribute('role', 'alert');
     errorBanner.setAttribute('aria-live', 'polite');
@@ -164,7 +172,8 @@ function showError(message) {
 function clearError() {
   if (errorBanner) {
     errorBanner.hidden = true;
-    errorBanner.textContent = '';
+    const msg = errorBanner.querySelector('.error-message');
+    if (msg) msg.textContent = '';
     errorBanner.classList.remove('short');
     errorBanner.removeAttribute('title');
   }
@@ -343,6 +352,12 @@ function init() {
   if (clearKeyButton) clearKeyButton.addEventListener('click', handleClearApiKey);
   if (toolForm) toolForm.addEventListener('submit', handleRun);
   if (copyButton) copyButton.addEventListener('click', handleCopy);
+  if (errorDismiss) {
+    errorDismiss.addEventListener('click', (e) => {
+      e.preventDefault();
+      clearError();
+    });
+  }
 }
 
 init();

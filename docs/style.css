@@ -239,6 +239,29 @@ textarea {
   text-overflow: ellipsis;
 }
 
+/* Constrain message inside flex container for proper ellipsis */
+.error-message {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.error-dismiss {
+  border: none;
+  background: transparent;
+  color: #92400e;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.25rem;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.error-dismiss:hover {
+  background: rgba(0,0,0,0.04);
+}
+
 .result-panel {
   margin-top: 1.5rem;
   padding: 1rem;
