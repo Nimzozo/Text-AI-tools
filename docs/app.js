@@ -141,6 +141,7 @@ function loadApiKey() {
   const apiKey = localStorage.getItem(STORAGE_KEY) || '';
   if (apiKeyInput) {
     apiKeyInput.value = apiKey;
+    apiKeyInput.type = 'password';
   }
 
   if (apiKey && !loadAuthMethod()) {
@@ -322,6 +323,7 @@ function saveApiKey(key) {
 
   if (apiKeyInput) {
     apiKeyInput.value = key || '';
+    apiKeyInput.type = 'password';
   }
 
   setAuthStatus(key);
