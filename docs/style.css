@@ -231,6 +231,8 @@ textarea {
   top: 1rem;
   z-index: 9999;
   margin-bottom: 1rem;
+  grid-column: 1 / -1;
+  width: 100%;
 }
 
 /* Collapse short single-line messages */
