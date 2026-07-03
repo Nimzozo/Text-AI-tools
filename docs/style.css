@@ -219,7 +219,6 @@ button:hover {
   color: #4b5563;
 }
 
-.auth-group,
 .form-group {
   display: grid;
   gap: 0.75rem;

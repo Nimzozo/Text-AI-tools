@@ -2,9 +2,6 @@ const STORAGE_KEY = 'pollinationsApiKey';
 
 const authButton = document.querySelector('#auth-button');
 const authStatus = document.querySelector('#auth-status');
-const apiKeyInput = document.querySelector('#api-key-input');
-const saveKeyButton = document.querySelector('#save-key-button');
-const clearKeyButton = document.querySelector('#clear-key-button');
 const toolForm = document.querySelector('#tool-form');
 const actionSelect = document.querySelector('#tool-action');
 const actionDescription = document.querySelector('#action-description');
@@ -51,7 +48,6 @@ function loadApiKey() {
 
   // Otherwise load from storage
   const apiKey = localStorage.getItem(STORAGE_KEY) || '';
-  if (apiKeyInput) apiKeyInput.value = apiKey;
   setAuthStatus(apiKey);
 }
 
@@ -65,7 +61,6 @@ function saveApiKey(key) {
   } else {
     localStorage.removeItem(STORAGE_KEY);
   }
-  if (apiKeyInput) apiKeyInput.value = key || '';
   setAuthStatus(key);
 }
 
@@ -227,28 +222,11 @@ function handleCopy() {
     });
 }
 
-function handleSaveKey() {
-  const key = apiKeyInput.value.trim();
-  if (!key) {
-    showError('Please paste a valid API key to save it.');
-    return;
-  }
-  clearError();
-  saveApiKey(key);
-}
-
-function handleClearKey() {
-  clearError();
-  saveApiKey('');
-}
-
 function init() {
   loadApiKey();
   updateActionSettings();
   actionSelect.addEventListener('change', updateActionSettings);
   authButton.addEventListener('click', handleAuthClick);
-  saveKeyButton.addEventListener('click', handleSaveKey);
-  clearKeyButton.addEventListener('click', handleClearKey);
   toolForm.addEventListener('submit', handleRun);
   copyButton.addEventListener('click', handleCopy);
 }
