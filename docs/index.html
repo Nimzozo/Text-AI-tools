@@ -22,29 +22,28 @@
       <section class="hero">
         <div class="container hero-content">
           <h1>Paste text, choose an action, and run your prompt.</h1>
-          <p>Authenticate with Pollinations, then summarize, translate, format, or review your text instantly.</p>
+          <p>Authenticate with Pollinations, then summarize, convert to Markdown, improve or translate your text instantly.</p>
         </div>
       </section>
 
       <section id="features" class="section features">
         <div class="container">
-          <h2>Built for text workflows</h2>
           <div class="cards">
             <article class="card">
-              <h3>Summarize</h3>
+              <h3>Explain</h3>
               <p>Turn long text into focused summaries that are easier to read and share.</p>
+            </article>
+            <article class="card">
+              <h3>Format</h3>
+              <p>Convert messy text using Markdown with consistent structure for better readability.</p>
+            </article>
+            <article class="card">
+              <h3>Improve</h3>
+              <p>Improve clarity, grammar, and tone with AI-powered feedback and rewriting.</p>
             </article>
             <article class="card">
               <h3>Translate</h3>
               <p>Convert text into another language while preserving meaning and fluency.</p>
-            </article>
-            <article class="card">
-              <h3>Review</h3>
-              <p>Improve clarity, grammar, and tone with AI-powered feedback and rewriting.</p>
-            </article>
-            <article class="card">
-              <h3>Format</h3>
-              <p>Clean up messy text with consistent structure, punctuation, and readability.</p>
             </article>
           </div>
         </div>
@@ -63,7 +62,6 @@
 
             <form id="tool-form">
               <div class="form-group">
-                <label for="input-text">Input text</label>
                 <textarea id="input-text" rows="12" placeholder="Paste your text here..."></textarea>
               </div>
 
@@ -71,17 +69,17 @@
                 <label for="tool-action">Action</label>
                 <div class="select-row">
                   <select id="tool-action">
-                    <option value="summarize">Summarize</option>
-                    <option value="translate">Translate</option>
+                    <option value="explain">Explain</option>
                     <option value="format">Format</option>
-                    <option value="review">Review</option>
+                    <option value="improve">Improve</option>
+                    <option value="translate">Translate</option>
                   </select>
-                  <div id="translate-language-row" class="language-row" hidden>
+                  <p id="action-description" class="action-description">Create a concise summary of the text.</p>
+                  <div id="translate-language-row" class="language-row">
                     <label for="target-language">Language</label>
                     <input id="target-language" type="text" placeholder="English" />
                   </div>
                 </div>
-                <p id="action-description" class="action-description">Create a concise summary of the text.</p>
               </div>
 
               <div class="form-actions">
@@ -94,10 +92,9 @@
           <div class="tool-panel card output-card">
             <div class="panel-header">
               <p class="eyebrow">Result</p>
-              <h2>Processed text</h2>
             </div>
             <div class="output-card-body">
-              <div id="output-display" class="output-display">Your processed text appears here after running the tool.</div>
+              <div id="output-display" class="output-display"></div>
               <div class="output-footer">
                 <span id="output-hint" class="output-hint">Results appear once processing completes.</span>
                 <button id="copy-button" class="button secondary" type="button">Copy result</button>

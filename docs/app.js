@@ -90,14 +90,14 @@ function clearError() {
  */
 function createPrompt(action, inputText, targetLanguage) {
   switch (action) {
-    case 'summarize':
-      return `Summarize the following text in a concise and readable way:\n\n${inputText}`;
-    case 'translate':
-      return `Translate the following text into ${targetLanguage}. Preserve meaning and keep formatting:\n\n${inputText}`;
+    case 'explain':
+      return `Summarize the following text in a concise manner, highlighting the main points and key information. Preserve meaning:\n\n${inputText}`;
     case 'format':
-      return `Rewrite the following text with clean formatting, proper punctuation, and clear structure. Keep the meaning unchanged:\n\n${inputText}`;
-    case 'review':
-      return `Review the following text and suggest improvements for clarity, grammar, tone, and organization. Provide the improved version and a brief summary of changes:\n\n${inputText}`;
+      return `Rewrite the following text with proper Markdown formatting, punctuation, and clear structure. Preserve meaning:\n\n${inputText}`;
+    case 'improve':
+      return `Suggest improvements for clarity, grammar, tone, and organization of the following text while keeping the meaning intact:\n\n${inputText}`;
+    case 'translate':
+      return `Translate the following text into ${targetLanguage} while keeping the meaning intact:\n\n${inputText}`;
     default:
       return inputText;
   }
@@ -107,10 +107,10 @@ function updateActionSettings() {
   targetLanguageRow.hidden = actionSelect.value !== 'translate';
 
   const descriptions = {
-    summarize: 'Create a concise summary of the text.',
-    translate: 'Translate the text into your selected language while keeping the meaning intact.',
-    format: 'Clean up punctuation, spacing, and structure while preserving your original content.',
-    review: 'Review the text for clarity, grammar, and tone, then suggest a better version.'
+    explain: 'Create a concise summary of the text.',
+    format: 'Rewrite the text with Markdown formatting, proper punctuation, and clear structure.',
+    improve: 'Suggest improvements for clarity, grammar, tone, and organization while keeping the meaning intact.',
+    translate: 'Translate the text into your selected language while keeping the meaning intact.'
   };
 
   actionDescription.textContent = descriptions[actionSelect.value] || '';
