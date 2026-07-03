@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'pollinationsApiKey';
+const MODEL_STORAGE_KEY = 'pollinationsModel';
 
 const authButton = document.querySelector('#auth-button');
 const authStatus = document.querySelector('#auth-status');
@@ -17,6 +18,7 @@ const errorDismiss = document.querySelector('#error-dismiss');
 const copyFeedback = document.querySelector('#copy-feedback');
 const textInput = document.querySelector('#input-text');
 const targetLanguageInput = document.querySelector('#target-language');
+const modelSelect = document.querySelector('#model-select');
 const toolContent = document.querySelector('#tool-content');
 
 /**
@@ -57,6 +59,10 @@ function setToolAccess(isConnected) {
     actionSelect.disabled = !isConnected;
   }
 
+  if (modelSelect) {
+    modelSelect.disabled = !isConnected;
+  }
+
   if (targetLanguageInput) {
     targetLanguageInput.disabled = !isConnected;
   }
@@ -92,6 +98,28 @@ function loadApiKey() {
     apiKeyInput.value = apiKey;
   }
   setAuthStatus(apiKey);
+}
+
+function loadModelSelection() {
+  const savedModel = localStorage.getItem(MODEL_STORAGE_KEY) || 'mistral';
+  const selectedModel = ['mistral', 'openai', 'llama'].includes(savedModel) ? savedModel : 'mistral';
+
+  if (modelSelect) {
+    modelSelect.value = selectedModel;
+  }
+
+  return selectedModel;
+}
+
+function saveModelSelection(model) {
+  const selectedModel = model || 'mistral';
+  localStorage.setItem(MODEL_STORAGE_KEY, selectedModel);
+
+  if (modelSelect) {
+    modelSelect.value = selectedModel;
+  }
+
+  return selectedModel;
 }
 
 /**
@@ -214,10 +242,10 @@ function updateActionSettings() {
   actionDescription.textContent = descriptions[actionSelect.value] || '';
 }
 
-async function pollinationsRequest(apiKey, prompt) {
+async function pollinationsRequest(apiKey, prompt, model = 'mistral') {
   const endpoint = 'https://gen.pollinations.ai/text';
   const payload = {
-    model: 'mistral',
+    model: model || 'mistral',
     messages: [
       {
         role: 'user',
@@ -275,6 +303,7 @@ async function handleRun(event) {
   const text = textInput?.value.trim() || '';
   const action = actionSelect?.value || 'explain';
   const targetLanguage = targetLanguageInput?.value.trim() || '';
+  const model = saveModelSelection(modelSelect?.value || localStorage.getItem(MODEL_STORAGE_KEY) || 'mistral');
 
   if (!apiKey) {
     showError('Please connect to Pollinations or save your API key before running.');
@@ -300,7 +329,7 @@ async function handleRun(event) {
   if (copyFeedback) copyFeedback.hidden = true;
 
   try {
-    const result = await pollinationsRequest(apiKey, prompt);
+    const result = await pollinationsRequest(apiKey, prompt, model);
     if (outputArea) outputArea.textContent = result;
     clearError();
   } catch (error) {
@@ -345,8 +374,10 @@ function handleCopy() {
 
 function init() {
   loadApiKey();
+  loadModelSelection();
   updateActionSettings();
   if (actionSelect) actionSelect.addEventListener('change', updateActionSettings);
+  if (modelSelect) modelSelect.addEventListener('change', () => saveModelSelection(modelSelect.value));
   if (authButton) authButton.addEventListener('click', handleAuthClick);
   if (saveKeyButton) saveKeyButton.addEventListener('click', handleSaveApiKey);
   if (clearKeyButton) clearKeyButton.addEventListener('click', handleClearApiKey);
