@@ -51,19 +51,34 @@
 
       <section id="tool" class="section tool-section">
         <div class="container tool-grid">
-          <div class="tool-panel card tool-card">
-            <div class="panel-header auth-row">
-              <div>
-                <p class="eyebrow">Authentication</p>
-                <p id="auth-status" class="auth-status">Not connected</p>
+          <div class="tool-panel">
+            <div class="card auth-card">
+              <div class="panel-header auth-row">
+                <div>
+                  <p class="eyebrow">Authentication</p>
+                  <p id="auth-status" class="auth-status">Not connected</p>
+                </div>
+                <button id="auth-button" class="button">Connect with Pollinations</button>
               </div>
-              <button id="auth-button" class="button">Open auth page</button>
+              <p class="auth-note">Paste your API key here or use Pollinations auth to connect and unlock the text tools.</p>
+              <div class="auth-input-row">
+                <input id="api-key-input" type="text" placeholder="Enter Pollinations API key" autocomplete="on" />
+                <button id="save-key-button" class="button" type="button">Save key</button>
+                <button id="clear-key-button" class="button secondary" type="button">Clear</button>
+              </div>
             </div>
-
-            <form id="tool-form">
-              <div class="form-group">
-                <textarea id="input-text" rows="12" placeholder="Paste your text here..."></textarea>
+            <div class="card-divider"></div>
+            <div class="card tool-card">
+              <div class="panel-header auth-row">
+                <div>
+                  <p class="eyebrow">Tool</p>
+                  <p class="tool-summary">Choose an action and process your text.</p>
+                </div>
               </div>
+              <form id="tool-form">
+                <div class="form-group">
+                  <textarea id="input-text" rows="12" placeholder="Paste your text here..."></textarea>
+                </div>
 
               <div class="form-group">
                 <label for="tool-action">Action</label>

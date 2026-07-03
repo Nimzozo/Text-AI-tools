@@ -150,6 +150,44 @@ button:hover {
   gap: 1rem;
 }
 
+.auth-card,
+.tool-card,
+.output-card {
+  border-radius: 0.75rem;
+}
+
+.auth-card {
+  background: #f8fafc;
+  border-color: #e5e7eb;
+}
+
+.auth-card .panel-header {
+  margin-bottom: 0.75rem;
+}
+
+.auth-note {
+  margin: 0 0 1rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.card-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0.75rem 0;
+}
+
+.tool-panel > .card + .card {
+  margin-top: 0.75rem;
+}
+
+.tool-summary {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
 .card {
   padding: 1.5rem;
   border-radius: 0;
@@ -191,6 +229,41 @@ button:hover {
 .output-hint {
   color: #6b7280;
   font-size: 0.9rem;
+}
+
+.auth-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.auth-input-row input {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+}
+
+.auth-input-row button {
+  white-space: nowrap;
+}
+
+.auth-status {
+  margin: 0;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.status-connected {
+  color: #15803d;
+}
+
+.status-disconnected {
+  color: #6b7280;
 }
 
 .feedback-text {

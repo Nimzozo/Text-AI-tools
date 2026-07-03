@@ -2,6 +2,9 @@ const STORAGE_KEY = 'pollinationsApiKey';
 
 const authButton = document.querySelector('#auth-button');
 const authStatus = document.querySelector('#auth-status');
+const apiKeyInput = document.querySelector('#api-key-input');
+const saveKeyButton = document.querySelector('#save-key-button');
+const clearKeyButton = document.querySelector('#clear-key-button');
 const toolForm = document.querySelector('#tool-form');
 const actionSelect = document.querySelector('#tool-action');
 const actionDescription = document.querySelector('#action-description');
@@ -48,6 +51,9 @@ function loadApiKey() {
 
   // Otherwise load from storage
   const apiKey = localStorage.getItem(STORAGE_KEY) || '';
+  if (apiKeyInput) {
+    apiKeyInput.value = apiKey;
+  }
   setAuthStatus(apiKey);
 }
 
@@ -61,7 +67,34 @@ function saveApiKey(key) {
   } else {
     localStorage.removeItem(STORAGE_KEY);
   }
+
+  if (apiKeyInput) {
+    apiKeyInput.value = key || '';
+  }
+
   setAuthStatus(key);
+}
+
+function handleSaveApiKey() {
+  clearError();
+  const key = apiKeyInput?.value.trim() || '';
+
+  if (!key) {
+    showError('Please enter an API key before saving.');
+    return;
+  }
+
+  saveApiKey(key);
+}
+
+function handleClearApiKey() {
+  clearError();
+
+  if (apiKeyInput) {
+    apiKeyInput.value = '';
+  }
+
+  saveApiKey('');
 }
 
 /**
@@ -227,6 +260,8 @@ function init() {
   updateActionSettings();
   actionSelect.addEventListener('change', updateActionSettings);
   authButton.addEventListener('click', handleAuthClick);
+  saveKeyButton.addEventListener('click', handleSaveApiKey);
+  clearKeyButton.addEventListener('click', handleClearApiKey);
   toolForm.addEventListener('submit', handleRun);
   copyButton.addEventListener('click', handleCopy);
 }
