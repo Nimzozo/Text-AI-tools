@@ -53,7 +53,7 @@
         <div class="container tool-grid">
           <div class="tool-panel">
             <div class="card auth-card">
-              <div class="auth-head">
+              <div class="panel-header auth-head">
                 <p class="eyebrow">Authentication</p>
               </div>
               <div class="auth-status-row">
@@ -62,62 +62,66 @@
               <div class="auth-action-row">
                 <button id="auth-button" class="button">Connect with Pollinations</button>
               </div>
+              <p id="auth-instructions" class="auth-note">Connect with Pollinations or save your API key to unlock the text tools.</p>
               <div class="auth-method-divider">
                 <span>OR</span>
               </div>
-              <p class="auth-note">Paste your API key here or use Pollinations auth to connect and unlock the text tools.</p>
               <div class="auth-input-row">
-                <input id="api-key-input" type="text" placeholder="Enter Pollinations API key" autocomplete="on" />
+                <input id="api-key-input" type="text" placeholder="Paste your Pollination API key here and click [Save key]." autocomplete="on" />
                 <button id="save-key-button" class="button" type="button">Save key</button>
                 <button id="clear-key-button" class="button secondary" type="button">Clear</button>
               </div>
             </div>
-            <div class="card tool-card">
-              <div class="panel-header auth-row">
-                <div>
-                  <p class="eyebrow">Tool</p>
-                  <p class="tool-summary">Choose an action and process your text.</p>
-                </div>
-              </div>
-              <form id="tool-form">
-                <div class="form-group">
-                  <textarea id="input-text" rows="12" placeholder="Paste your text here..."></textarea>
-                </div>
-
-              <div class="form-group">
-                <div class="select-row">
-                  <select id="tool-action">
-                    <option value="explain">Explain</option>
-                    <option value="format">Format</option>
-                    <option value="improve">Improve</option>
-                    <option value="translate">Translate</option>
-                  </select>
-                  <p id="action-description" class="action-description">Create a concise summary of the text.</p>
-                  <div id="translate-language-row" class="language-row">
-                    <label for="target-language">Language</label>
-                    <input id="target-language" type="text" placeholder="English" />
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-actions">
-                <button id="run-button" class="button" type="submit">Run</button>
-              </div>
-              <div id="error-banner" class="error-banner" hidden></div>
-            </form>
           </div>
 
-          <div class="tool-panel card output-card">
-            <div class="panel-header">
-              <p class="eyebrow">Result</p>
+          <div id="tool-content" class="tool-content" hidden>
+            <div class="tool-panel">
+              <div class="card tool-card">
+                <div class="panel-header auth-row">
+                  <div>
+                    <p class="eyebrow">Tool</p>
+                  </div>
+                </div>
+                <form id="tool-form">
+                  <div class="form-group">
+                    <textarea id="input-text" rows="12" placeholder="Paste your text here..."></textarea>
+                  </div>
+                <p class="action-label">Choose an action.</p>
+                <div class="form-group">
+                  <div class="select-row">
+                    <select id="tool-action">
+                      <option value="explain">Explain</option>
+                      <option value="format">Format</option>
+                      <option value="improve">Improve</option>
+                      <option value="translate">Translate</option>
+                    </select>
+                    <p id="action-description" class="action-description">Create a concise summary of the text.</p>
+                    <div id="translate-language-row" class="language-row">
+                      <label for="target-language">Language</label>
+                      <input id="target-language" type="text" placeholder="English" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button id="run-button" class="button" type="submit">Run</button>
+                </div>
+                <div id="error-banner" class="error-banner" hidden></div>
+              </form>
             </div>
-            <div class="output-card-body">
-              <div id="output-display" class="output-display"></div>
-              <div class="output-footer">
-                <span id="output-hint" class="output-hint">Results appear once processing completes.</span>
-                <button id="copy-button" class="button secondary" type="button">Copy result</button>
+
+            <div class="tool-panel card output-card">
+              <div class="panel-header">
+                <p class="eyebrow">Result</p>
               </div>
-              <div id="copy-feedback" class="feedback-text" hidden>Copied to clipboard</div>
+              <div class="output-card-body">
+                <div id="output-display" class="output-display"></div>
+                <div class="output-footer">
+                  <span id="output-hint" class="output-hint">Results appear once processing completes.</span>
+                  <button id="copy-button" class="button secondary" type="button">Copy</button>
+                </div>
+                <div id="copy-feedback" class="feedback-text" hidden>Copied to clipboard</div>
+              </div>
             </div>
           </div>
         </div>

@@ -173,6 +173,19 @@ button:hover {
   gap: 1rem;
 }
 
+.tool-content {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.tool-content[hidden] {
+  display: none !important;
+}
+
+.hidden {
+  display: none !important;
+}
+
 .auth-card,
 .tool-card,
 .output-card {

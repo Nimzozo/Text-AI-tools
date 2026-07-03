@@ -15,13 +15,17 @@ const runButton = document.querySelector('#run-button');
 const errorBanner = document.querySelector('#error-banner');
 const copyFeedback = document.querySelector('#copy-feedback');
 const textInput = document.querySelector('#input-text');
+const targetLanguageInput = document.querySelector('#target-language');
+const toolContent = document.querySelector('#tool-content');
 
 /**
  * Updates the authentication status display based on the provided API key.
  * @param {*} apiKey 
  */
 function setAuthStatus(apiKey) {
-  if (apiKey) {
+  const isConnected = Boolean(apiKey);
+
+  if (isConnected) {
     const masked = `${apiKey.slice(0, 4)}…${apiKey.slice(-4)}`;
     authStatus.textContent = `Connected as ${masked}`;
     authStatus.classList.add('status-connected');
@@ -30,6 +34,34 @@ function setAuthStatus(apiKey) {
     authStatus.textContent = 'Not connected';
     authStatus.classList.remove('status-connected');
     authStatus.classList.add('status-disconnected');
+  }
+
+  setToolAccess(isConnected);
+}
+
+function setToolAccess(isConnected) {
+  if (toolContent) {
+    toolContent.hidden = !isConnected;
+  }
+
+  if (textInput) {
+    textInput.disabled = !isConnected;
+  }
+
+  if (actionSelect) {
+    actionSelect.disabled = !isConnected;
+  }
+
+  if (targetLanguageInput) {
+    targetLanguageInput.disabled = !isConnected;
+  }
+
+  if (runButton) {
+    runButton.disabled = !isConnected;
+  }
+
+  if (copyButton) {
+    copyButton.disabled = !isConnected;
   }
 }
 
