@@ -91,12 +91,35 @@ button:hover {
 }
 
 .eyebrow {
-  margin: 0 0 1rem;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: #4f46e5;
   font-size: 0.8rem;
   font-weight: 700;
+}
+
+.panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.panel-header .tool-summary,
+.panel-header .auth-status {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.panel-header .auth-status {
+  color: #374151;
+  font-weight: 600;
 }
 
 .hero h1 {
@@ -161,8 +184,18 @@ button:hover {
   border-color: #e5e7eb;
 }
 
-.auth-card .panel-header {
+.auth-head {
   margin-bottom: 0.75rem;
+}
+
+.auth-status-row {
+  margin-bottom: 1rem;
+}
+
+.auth-action-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
 }
 
 .auth-note {
@@ -172,10 +205,24 @@ button:hover {
   line-height: 1.5;
 }
 
-.card-divider {
+.auth-method-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.auth-method-divider::before,
+.auth-method-divider::after {
+  content: '';
+  flex: 1;
   height: 1px;
   background: #e5e7eb;
-  margin: 0.75rem 0;
 }
 
 .tool-panel > .card + .card {
@@ -301,12 +348,13 @@ button:hover {
 .select-row,
 .output-actions {
   display: flex;
+  flex-direction: column;
   gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .auth-row {
-  align-items: center;
+  align-items: left;
 }
 
 .auth-status {

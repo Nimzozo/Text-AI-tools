@@ -53,12 +53,17 @@
         <div class="container tool-grid">
           <div class="tool-panel">
             <div class="card auth-card">
-              <div class="panel-header auth-row">
-                <div>
-                  <p class="eyebrow">Authentication</p>
-                  <p id="auth-status" class="auth-status">Not connected</p>
-                </div>
+              <div class="auth-head">
+                <p class="eyebrow">Authentication</p>
+              </div>
+              <div class="auth-status-row">
+                <p id="auth-status" class="auth-status">Not connected</p>
+              </div>
+              <div class="auth-action-row">
                 <button id="auth-button" class="button">Connect with Pollinations</button>
+              </div>
+              <div class="auth-method-divider">
+                <span>OR</span>
               </div>
               <p class="auth-note">Paste your API key here or use Pollinations auth to connect and unlock the text tools.</p>
               <div class="auth-input-row">
@@ -67,7 +72,6 @@
                 <button id="clear-key-button" class="button secondary" type="button">Clear</button>
               </div>
             </div>
-            <div class="card-divider"></div>
             <div class="card tool-card">
               <div class="panel-header auth-row">
                 <div>
@@ -81,7 +85,6 @@
                 </div>
 
               <div class="form-group">
-                <label for="tool-action">Action</label>
                 <div class="select-row">
                   <select id="tool-action">
                     <option value="explain">Explain</option>
