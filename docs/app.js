@@ -1,9 +1,13 @@
 const STORAGE_KEY = 'pollinationsApiKey';
+const AUTH_METHOD_STORAGE_KEY = 'pollinationsAuthMethod';
 const MODEL_STORAGE_KEY = 'pollinationsModel';
 const TARGET_LANGUAGE_STORAGE_KEY = 'pollinationsTargetLanguage';
+const LAST_INPUT_STORAGE_KEY = 'pollinationsLastInput';
+const LAST_ACTION_STORAGE_KEY = 'pollinationsLastAction';
 
 const authButton = document.querySelector('#auth-button');
 const authStatus = document.querySelector('#auth-status');
+const authNote = document.querySelector('#auth-note');
 const apiKeyInput = document.querySelector('#api-key-input');
 const saveKeyButton = document.querySelector('#save-key-button');
 const clearKeyButton = document.querySelector('#clear-key-button');
@@ -12,6 +16,7 @@ const actionSelect = document.querySelector('#tool-action');
 const actionDescription = document.querySelector('#action-description');
 const targetLanguageRow = document.querySelector('#translate-language-row');
 const outputArea = document.querySelector('#output-display');
+const outputHint = document.querySelector('#output-hint');
 const copyButton = document.querySelector('#copy-button');
 const runButton = document.querySelector('#run-button');
 const errorBanner = document.querySelector('#error-banner');
@@ -28,11 +33,18 @@ const toolContent = document.querySelector('#tool-content');
  */
 function setAuthStatus(apiKey) {
   const isConnected = Boolean(apiKey);
+  const authMethod = loadAuthMethod();
 
   if (isConnected) {
     const masked = `${apiKey.slice(0, 4)}…${apiKey.slice(-4)}`;
     if (authStatus) {
-      authStatus.textContent = `Connected as ${masked}`;
+      if (authMethod === 'oauth') {
+        authStatus.textContent = `Connected via OAuth as ${masked}`;
+      } else if (authMethod === 'apiKey') {
+        authStatus.textContent = `Connected with saved API key as ${masked}`;
+      } else {
+        authStatus.textContent = `Connected as ${masked}`;
+      }
       authStatus.classList.add('status-connected');
       authStatus.classList.remove('status-disconnected');
     }
@@ -44,7 +56,25 @@ function setAuthStatus(apiKey) {
     }
   }
 
+  updateAuthNote(isConnected, authMethod);
   setToolAccess(isConnected);
+}
+
+function updateAuthNote(isConnected, authMethod) {
+  if (!authNote) return;
+
+  if (!isConnected) {
+    authNote.textContent = 'Please connect or paste your Pollinations API key to continue.';
+    return;
+  }
+
+  if (authMethod === 'oauth') {
+    authNote.textContent = 'OAuth login successful. You can now use the tool.';
+  } else if (authMethod === 'apiKey') {
+    authNote.textContent = 'Saved API key is active. You can clear it anytime.';
+  } else {
+    authNote.textContent = 'Connected. You can now use the tool.';
+  }
 }
 
 function setToolAccess(isConnected) {
@@ -72,9 +102,14 @@ function setToolAccess(isConnected) {
     runButton.disabled = !isConnected;
   }
 
-  if (copyButton) {
-    copyButton.disabled = !isConnected || !outputArea?.textContent.trim();
-  }
+  updateCopyButtonState();
+}
+
+function updateCopyButtonState() {
+  if (!copyButton) return;
+  const hasOutput = !!outputArea?.textContent.trim();
+  const isConnected = !!localStorage.getItem(STORAGE_KEY);
+  copyButton.disabled = !hasOutput || !isConnected;
 }
 
 /**
@@ -85,11 +120,19 @@ function loadApiKey() {
   // Check for API key in URL hash from auth redirect
   const params = new URLSearchParams(location.hash.slice(1));
   const apiKeyFromUrl = params.get('api_key');
-  
+  const denied = params.has('accessDenied') || location.hash.includes('accessDenied');
+
+  if (denied) {
+    showError('OAuth authorization was denied. Please try again or paste your API key.');
+    window.history.replaceState({}, document.title, location.pathname + location.search);
+    return;
+  }
+
   if (apiKeyFromUrl) {
+    saveAuthMethod('oauth');
     saveApiKey(apiKeyFromUrl);
     // Clean up the URL hash
-    window.history.replaceState({}, document.title, window.location.pathname);
+    window.history.replaceState({}, document.title, location.pathname + location.search);
     return;
   }
 
@@ -98,6 +141,11 @@ function loadApiKey() {
   if (apiKeyInput) {
     apiKeyInput.value = apiKey;
   }
+
+  if (apiKey && !loadAuthMethod()) {
+    saveAuthMethod('apiKey');
+  }
+
   setAuthStatus(apiKey);
 }
 
@@ -142,6 +190,47 @@ function saveTargetLanguage(language) {
   return safeLanguage;
 }
 
+function loadAuthMethod() {
+  const method = localStorage.getItem(AUTH_METHOD_STORAGE_KEY);
+  return method === 'oauth' || method === 'apiKey' ? method : '';
+}
+
+function saveAuthMethod(method) {
+  if (method === 'oauth' || method === 'apiKey') {
+    localStorage.setItem(AUTH_METHOD_STORAGE_KEY, method);
+    return method;
+  }
+
+  localStorage.removeItem(AUTH_METHOD_STORAGE_KEY);
+  return '';
+}
+
+function loadLastInput() {
+  const savedInput = localStorage.getItem(LAST_INPUT_STORAGE_KEY) || '';
+  if (textInput) {
+    textInput.value = savedInput;
+  }
+  return savedInput;
+}
+
+function saveLastInput(value) {
+  localStorage.setItem(LAST_INPUT_STORAGE_KEY, value || '');
+}
+
+function loadLastAction() {
+  const savedAction = localStorage.getItem(LAST_ACTION_STORAGE_KEY) || 'explain';
+  if (actionSelect && ['explain', 'format', 'improve', 'translate'].includes(savedAction)) {
+    actionSelect.value = savedAction;
+  }
+  return savedAction;
+}
+
+function saveLastAction(value) {
+  const action = ['explain', 'format', 'improve', 'translate'].includes(value) ? value : 'explain';
+  localStorage.setItem(LAST_ACTION_STORAGE_KEY, action);
+  return action;
+}
+
 /**
  * Saves the API key to local storage and updates the authentication status.
  * @param {*} key 
@@ -169,6 +258,7 @@ function handleSaveApiKey() {
     return;
   }
 
+  saveAuthMethod('apiKey');
   saveApiKey(key);
 }
 
@@ -179,6 +269,7 @@ function handleClearApiKey() {
     apiKeyInput.value = '';
   }
 
+  saveAuthMethod('');
   saveApiKey('');
 }
 
@@ -261,6 +352,7 @@ function updateActionSettings() {
   };
 
   actionDescription.textContent = descriptions[action] || '';
+  saveLastAction(action);
 }
 
 async function pollinationsRequest(apiKey, prompt, model = 'mistral') {
@@ -341,6 +433,9 @@ async function handleRun(event) {
     return;
   }
 
+  saveLastInput(text);
+  saveLastAction(action);
+
   const prompt = createPrompt(action, text, targetLanguage || 'English');
 
   if (runButton) {
@@ -352,12 +447,12 @@ async function handleRun(event) {
   try {
     const result = await pollinationsRequest(apiKey, prompt, model);
     if (outputArea) outputArea.textContent = result;
-    if (copyButton) {
-      copyButton.disabled = false;
-    }
+    if (outputHint) outputHint.textContent = 'Processed successfully. Copy or edit the result below.';
+    updateCopyButtonState();
     clearError();
   } catch (error) {
     showError(error?.message || 'An unexpected error occurred.');
+    if (outputHint) outputHint.textContent = 'Processing failed. Fix the issue and try again.';
   } finally {
     if (runButton) {
       runButton.disabled = false;
@@ -371,8 +466,9 @@ async function handleRun(event) {
  * The API key will be captured in the URL hash after the redirect and processed by loadApiKey().
  */
 function handleAuthClick() {
+  const cleanRedirect = location.origin + location.pathname + location.search;
   const params = new URLSearchParams({
-    redirect_uri: location.href,
+    redirect_uri: cleanRedirect,
     client_id: 'pk_glFXkwE3j6MaBBMM',
   });
   window.location.href = `https://enter.pollinations.ai/authorize?${params}`;
@@ -390,6 +486,7 @@ function handleCopy() {
           copyFeedback.hidden = true;
         }, 2000);
       }
+      if (outputHint) outputHint.textContent = 'Result copied to clipboard.';
     })
     .catch(() => {
       showError('Unable to copy result.');
