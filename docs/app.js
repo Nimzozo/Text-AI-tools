@@ -27,13 +27,17 @@ function setAuthStatus(apiKey) {
 
   if (isConnected) {
     const masked = `${apiKey.slice(0, 4)}…${apiKey.slice(-4)}`;
-    authStatus.textContent = `Connected as ${masked}`;
-    authStatus.classList.add('status-connected');
-    authStatus.classList.remove('status-disconnected');
+    if (authStatus) {
+      authStatus.textContent = `Connected as ${masked}`;
+      authStatus.classList.add('status-connected');
+      authStatus.classList.remove('status-disconnected');
+    }
   } else {
-    authStatus.textContent = 'Not connected';
-    authStatus.classList.remove('status-connected');
-    authStatus.classList.add('status-disconnected');
+    if (authStatus) {
+      authStatus.textContent = 'Not connected';
+      authStatus.classList.remove('status-connected');
+      authStatus.classList.add('status-disconnected');
+    }
   }
 
   setToolAccess(isConnected);
@@ -134,16 +138,36 @@ function handleClearApiKey() {
  * @param {*} message 
  */
 function showError(message) {
-  errorBanner.textContent = message;
-  errorBanner.hidden = false;
+  const text = message || 'Something went wrong. Please try again.';
+  if (errorBanner) {
+    errorBanner.textContent = text;
+    errorBanner.hidden = false;
+    errorBanner.setAttribute('role', 'alert');
+    errorBanner.setAttribute('aria-live', 'polite');
+    // If message is short and single-line, collapse to one-line with ellipsis
+    const isShort = text.length <= 80 && !text.includes('\n');
+    if (isShort) {
+      errorBanner.classList.add('short');
+    } else {
+      errorBanner.classList.remove('short');
+    }
+    // keep full text in title for accessibility/hover
+    errorBanner.title = text;
+  } else {
+    console.error('Error:', text);
+  }
 }
 
 /**
  * Clears the error message from the error banner.
  */
 function clearError() {
-  errorBanner.hidden = true;
-  errorBanner.textContent = '';
+  if (errorBanner) {
+    errorBanner.hidden = true;
+    errorBanner.textContent = '';
+    errorBanner.classList.remove('short');
+    errorBanner.removeAttribute('title');
+  }
 }
 
 /**
@@ -192,33 +216,46 @@ async function pollinationsRequest(apiKey, prompt) {
       }
     ]
   };
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`
-    },
-    body: JSON.stringify(payload)
-  });
+  let response;
+  try {
+    response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(payload)
+    });
+  } catch (networkError) {
+    throw new Error('Network error. Check your connection and try again.');
+  }
 
   const text = await response.text();
-  if (!response.ok) {
-    const message = text.trim() || response.statusText;
-    throw new Error(`API request failed: ${response.status} ${response.statusText} - ${message}`);
-  }
-
   const contentType = response.headers.get('content-type') || '';
-  if (!contentType.includes('application/json')) {
-    return text.trim();
+
+  if (!response.ok) {
+    let message = response.statusText || `Request failed with status ${response.status}`;
+    if (contentType.includes('application/json')) {
+      try {
+        const data = JSON.parse(text);
+        message = data.error?.message || data.message || data.detail || message;
+      } catch (e) {}
+    } else if (text && text.trim()) {
+      message = text.trim();
+    }
+    throw new Error(message);
   }
 
-  try {
-    const data = JSON.parse(text);
-    return data.text || data.output || data.result || data?.choices?.[0]?.text || JSON.stringify(data, null, 2);
-  } catch (error) {
-    return text.trim();
+  if (contentType.includes('application/json')) {
+    try {
+      const data = JSON.parse(text);
+      return data.text || data.output || data.result || data?.choices?.[0]?.text || JSON.stringify(data, null, 2);
+    } catch (err) {
+      return text.trim();
+    }
   }
+
+  return text.trim();
 }
 
 async function handleRun(event) {
@@ -226,12 +263,12 @@ async function handleRun(event) {
   clearError();
 
   const apiKey = localStorage.getItem(STORAGE_KEY);
-  const text = textInput.value.trim();
-  const action = actionSelect.value;
-  const targetLanguage = document.querySelector('#target-language').value.trim() || 'English';
+  const text = textInput?.value.trim() || '';
+  const action = actionSelect?.value || 'explain';
+  const targetLanguage = targetLanguageInput?.value.trim() || '';
 
   if (!apiKey) {
-    showError('Please connect to the Pollinations API before running the tool.');
+    showError('Please connect to Pollinations or save your API key before running.');
     return;
   }
 
@@ -240,20 +277,30 @@ async function handleRun(event) {
     return;
   }
 
-  const prompt = createPrompt(action, text, targetLanguage);
-  runButton.disabled = true;
-  runButton.textContent = 'Processing...';
-  outputArea.textContent = '';
+  if (action === 'translate' && !targetLanguage) {
+    showError('Please enter a target language for translation.');
+    return;
+  }
+
+  const prompt = createPrompt(action, text, targetLanguage || 'English');
+
+  if (runButton) {
+    runButton.disabled = true;
+    runButton.textContent = 'Processing...';
+  }
   if (copyFeedback) copyFeedback.hidden = true;
 
   try {
     const result = await pollinationsRequest(apiKey, prompt);
-    outputArea.textContent = result;
+    if (outputArea) outputArea.textContent = result;
+    clearError();
   } catch (error) {
-    showError(error.message);
+    showError(error?.message || 'An unexpected error occurred.');
   } finally {
-    runButton.disabled = false;
-    runButton.textContent = 'Run';
+    if (runButton) {
+      runButton.disabled = false;
+      runButton.textContent = 'Run';
+    }
   }
 }
 
@@ -290,12 +337,12 @@ function handleCopy() {
 function init() {
   loadApiKey();
   updateActionSettings();
-  actionSelect.addEventListener('change', updateActionSettings);
-  authButton.addEventListener('click', handleAuthClick);
-  saveKeyButton.addEventListener('click', handleSaveApiKey);
-  clearKeyButton.addEventListener('click', handleClearApiKey);
-  toolForm.addEventListener('submit', handleRun);
-  copyButton.addEventListener('click', handleCopy);
+  if (actionSelect) actionSelect.addEventListener('change', updateActionSettings);
+  if (authButton) authButton.addEventListener('click', handleAuthClick);
+  if (saveKeyButton) saveKeyButton.addEventListener('click', handleSaveApiKey);
+  if (clearKeyButton) clearKeyButton.addEventListener('click', handleClearApiKey);
+  if (toolForm) toolForm.addEventListener('submit', handleRun);
+  if (copyButton) copyButton.addEventListener('click', handleCopy);
 }
 
 init();

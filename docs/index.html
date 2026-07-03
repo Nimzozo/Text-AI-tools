@@ -7,133 +7,92 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="container">
-        <a class="brand" href="#">Text AI Tools</a>
-        <nav class="nav-links">
-          <a href="#features">Features</a>
-          <a href="#tool">Tool</a>
-          <a href="https://github.com/nimzozo/text-ai-tools" target="_blank">GitHub</a>
-        </nav>
-      </div>
-    </header>
-
-    <main>
-      <section class="hero">
-        <div class="container hero-content">
-          <h1>Paste text, choose an action, and run your prompt.</h1>
-          <p>Authenticate with Pollinations, then summarize, convert to Markdown, improve or translate your text instantly.</p>
+    <div class="app-shell">
+      <header class="header">
+        <div class="brand-row">
+          <a class="brand" href="#">Text AI Tools</a>
+          <a class="github-link" href="https://github.com/nimzozo/text-ai-tools" target="_blank" rel="noreferrer">GitHub</a>
         </div>
-      </section>
+        <p class="subtitle">Paste text, choose an action, run it, and copy the result.</p>
+      </header>
 
-      <section id="features" class="section features">
-        <div class="container">
-          <div class="cards">
-            <article class="card">
-              <h3>Explain</h3>
-              <p>Turn long text into focused summaries that are easier to read and share.</p>
-            </article>
-            <article class="card">
-              <h3>Format</h3>
-              <p>Convert messy text using Markdown with consistent structure for better readability.</p>
-            </article>
-            <article class="card">
-              <h3>Improve</h3>
-              <p>Improve clarity, grammar, and tone with AI-powered feedback and rewriting.</p>
-            </article>
-            <article class="card">
-              <h3>Translate</h3>
-              <p>Convert text into another language while preserving meaning and fluency.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section id="tool" class="section tool-section">
-        <div class="container tool-grid">
-          <div class="tool-panel">
-            <div class="card auth-card">
-              <div class="panel-header auth-head">
-                <p class="eyebrow">Authentication</p>
-              </div>
-              <div class="auth-status-row">
-                <p id="auth-status" class="auth-status">Not connected</p>
-              </div>
-              <div class="auth-action-row">
-                <button id="auth-button" class="button">Connect with Pollinations</button>
-              </div>
-              <p id="auth-instructions" class="auth-note">Connect with Pollinations or save your API key to unlock the text tools.</p>
-              <div class="auth-method-divider">
-                <span>OR</span>
-              </div>
-              <div class="auth-input-row">
-                <input id="api-key-input" type="text" placeholder="Paste your Pollination API key here and click [Save key]." autocomplete="on" />
-                <button id="save-key-button" class="button" type="button">Save key</button>
-                <button id="clear-key-button" class="button secondary" type="button">Clear</button>
-              </div>
-            </div>
+      <main class="main-grid">
+        <div id="error-banner" class="error-banner" hidden role="alert" aria-live="polite"></div>
+        <section class="card auth-card">
+          <div class="card-header">
+            <p class="eyebrow">Authentication</p>
+            <h2>Connect or save your API key</h2>
           </div>
 
-          <div id="tool-content" class="tool-content" hidden>
-            <div class="tool-panel">
-              <div class="card tool-card">
-                <div class="panel-header auth-row">
-                  <div>
-                    <p class="eyebrow">Tool</p>
-                  </div>
-                </div>
-                <form id="tool-form">
-                  <div class="form-group">
-                    <textarea id="input-text" rows="12" placeholder="Paste your text here..."></textarea>
-                  </div>
-                <p class="action-label">Choose an action.</p>
-                <div class="form-group">
-                  <div class="select-row">
-                    <select id="tool-action">
-                      <option value="explain">Explain</option>
-                      <option value="format">Format</option>
-                      <option value="improve">Improve</option>
-                      <option value="translate">Translate</option>
-                    </select>
-                    <p id="action-description" class="action-description">Create a concise summary of the text.</p>
-                    <div id="translate-language-row" class="language-row">
-                      <label for="target-language">Language</label>
-                      <input id="target-language" type="text" placeholder="English" />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-actions">
-                  <button id="run-button" class="button" type="submit">Run</button>
-                </div>
-                <div id="error-banner" class="error-banner" hidden></div>
-              </form>
-            </div>
-
-            <div class="tool-panel card output-card">
-              <div class="panel-header">
-                <p class="eyebrow">Result</p>
-              </div>
-              <div class="output-card-body">
-                <div id="output-display" class="output-display"></div>
-                <div class="output-footer">
-                  <span id="output-hint" class="output-hint">Results appear once processing completes.</span>
-                  <button id="copy-button" class="button secondary" type="button">Copy</button>
-                </div>
-                <div id="copy-feedback" class="feedback-text" hidden>Copied to clipboard</div>
-              </div>
-            </div>
+          <div class="status-row">
+            <p id="auth-status" class="auth-status">Not connected</p>
           </div>
-        </div>
-      </section>
 
-    </main>
+          <button id="auth-button" class="button primary">Connect with Pollinations</button>
 
-    <footer id="contact" class="site-footer">
-      <div class="container">
-        <p>Powered by <a href="https://pollinations.ai">Pollinations</a> and a lightweight interface.</p>
-      </div>
-    </footer>
+          <div class="divider"><span>or</span></div>
+
+          <label class="field-label" for="api-key-input">API key</label>
+          <input id="api-key-input" type="text" placeholder="Paste your Pollinations API key" autocomplete="on" />
+
+          <div class="button-row">
+            <button id="save-key-button" class="button secondary" type="button">Save key</button>
+            <button id="clear-key-button" class="button secondary" type="button">Clear</button>
+          </div>
+
+          <p class="note">You can use either OAuth connect or paste your key directly.</p>
+        </section>
+
+        <section class="card tool-card">
+          <div class="card-header">
+            <p class="eyebrow">Text tool</p>
+            <h2>Enter text and choose an action</h2>
+          </div>
+
+          <form id="tool-form" class="tool-form">
+            <label class="field-label" for="input-text">Input text</label>
+            <textarea id="input-text" rows="12" placeholder="Paste your text here..."></textarea>
+
+            <div class="field-group">
+              <div class="field-block">
+                <label class="field-label" for="tool-action">Action</label>
+                <select id="tool-action">
+                  <option value="explain">Explain</option>
+                  <option value="format">Format</option>
+                  <option value="improve">Improve</option>
+                  <option value="translate">Translate</option>
+                </select>
+              </div>
+
+              <div class="field-block" id="translate-language-row">
+                <label class="field-label" for="target-language">Target language</label>
+                <input id="target-language" type="text" placeholder="English" />
+              </div>
+            </div>
+
+            <p id="action-description" class="action-description">Create a concise summary of the text.</p>
+
+            <button id="run-button" class="button primary" type="submit">Run</button>
+          </form>
+
+          <div class="result-panel card output-card">
+            <div class="panel-header">
+              <p class="eyebrow">Result</p>
+            </div>
+            <div id="output-display" class="output-display"></div>
+            <div class="output-footer">
+              <span id="output-hint" class="output-hint">Results appear after processing.</span>
+              <button id="copy-button" class="button secondary" type="button">Copy</button>
+            </div>
+            <div id="copy-feedback" class="feedback-text" hidden>Copied to clipboard</div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>Powered by Pollinations • Lightweight AI text tools</p>
+      </footer>
+    </div>
 
     <script src="app.js"></script>
   </body>
