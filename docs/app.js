@@ -26,6 +26,7 @@ const textInput = document.querySelector('#input-text');
 const targetLanguageInput = document.querySelector('#target-language');
 const modelSelect = document.querySelector('#model-select');
 const toolContent = document.querySelector('#tool-content');
+const DEFAULT_MODEL_OPTIONS = ['mistral', 'openai', 'llama'];
 
 /**
  * Updates the authentication status display based on the provided API key.
@@ -149,12 +150,89 @@ function loadApiKey() {
   setAuthStatus(apiKey);
 }
 
+function formatModelLabel(model) {
+  if (!model) return 'Model';
+  return String(model)
+    .replace(/[_-]+/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function getModelOptionsFromPayload(data) {
+  if (Array.isArray(data)) {
+    return data
+      .map((model) => (typeof model === 'string' ? model : model?.name || model?.id || model?.value || model?.model))
+      .filter(Boolean);
+  }
+
+  if (Array.isArray(data?.models)) {
+    return data.models
+      .map((model) => (typeof model === 'string' ? model : model?.name || model?.id || model?.value || model?.model))
+      .filter(Boolean);
+  }
+
+  if (data && typeof data === 'object') {
+    if (typeof data.name === 'string') {
+      return [data.name];
+    }
+  }
+
+  return [];
+}
+
+function setModelOptions(models, selectedModel) {
+  if (!modelSelect) return selectedModel || DEFAULT_MODEL_OPTIONS[0] || 'mistral';
+
+  const availableModels = models.length ? models : DEFAULT_MODEL_OPTIONS;
+  const normalizedSelected = availableModels.includes(selectedModel) ? selectedModel : availableModels[0] || DEFAULT_MODEL_OPTIONS[0] || 'mistral';
+
+  modelSelect.innerHTML = '';
+  availableModels.forEach((model) => {
+    const option = document.createElement('option');
+    option.value = model;
+    option.textContent = formatModelLabel(model);
+    modelSelect.appendChild(option);
+  });
+
+  modelSelect.value = normalizedSelected;
+  localStorage.setItem(MODEL_STORAGE_KEY, normalizedSelected);
+
+  return normalizedSelected;
+}
+
+async function refreshModelOptions(apiKey) {
+  if (!modelSelect) return '';
+
+  const savedModel = localStorage.getItem(MODEL_STORAGE_KEY) || '';
+
+  try {
+    if (!apiKey) {
+      throw new Error('No API key');
+    }
+
+    const response = await fetch('https://gen.pollinations.ai/text/models', {
+      headers: {
+        Authorization: `Bearer ${apiKey}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Unable to load models (${response.status})`);
+    }
+
+    const data = await response.json();
+    const models = getModelOptionsFromPayload(data);
+    return setModelOptions(models, savedModel);
+  } catch (error) {
+    return setModelOptions(DEFAULT_MODEL_OPTIONS, savedModel);
+  }
+}
+
 function loadModelSelection() {
   const savedModel = localStorage.getItem(MODEL_STORAGE_KEY) || 'mistral';
-  const selectedModel = ['mistral', 'openai', 'llama'].includes(savedModel) ? savedModel : 'mistral';
+  const selectedModel = DEFAULT_MODEL_OPTIONS.includes(savedModel) ? savedModel : 'mistral';
 
   if (modelSelect) {
-    modelSelect.value = selectedModel;
+    setModelOptions(DEFAULT_MODEL_OPTIONS, selectedModel);
   }
 
   return selectedModel;
@@ -247,6 +325,11 @@ function saveApiKey(key) {
   }
 
   setAuthStatus(key);
+  if (key) {
+    void refreshModelOptions(key);
+  } else {
+    loadModelSelection();
+  }
 }
 
 function handleSaveApiKey() {
