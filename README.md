@@ -6,7 +6,7 @@
 
 - Convert arbitrary input into well-structured Markdown (headings, lists, code blocks, links).
 - Review and improve clarity, tone, and structure of input text.
-- Summarize input.
+- Summarize long text input.
 - Translate content between languages.
 
 ## License
