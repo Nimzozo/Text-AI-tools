@@ -46,7 +46,7 @@
           <p class="note">You can use either OAuth connect or paste your key directly.</p>
         </section>
 
-        <section class="card tool-card">
+        <section id="tool-content" class="card tool-card">
           <div class="card-header">
             <p class="eyebrow">Text tool</p>
             <h2>Enter text and choose an action</h2>
@@ -91,7 +91,7 @@
             <div class="panel-header">
               <p class="eyebrow">Result</p>
             </div>
-            <div id="output-display" class="output-display"></div>
+            <div id="output-display" class="output-display" aria-live="polite"></div>
             <div class="output-footer">
               <span id="output-hint" class="output-hint">Results appear after processing.</span>
               <button id="copy-button" class="button secondary" type="button">Copy</button>

@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'pollinationsApiKey';
 const MODEL_STORAGE_KEY = 'pollinationsModel';
+const TARGET_LANGUAGE_STORAGE_KEY = 'pollinationsTargetLanguage';
 
 const authButton = document.querySelector('#auth-button');
 const authStatus = document.querySelector('#auth-status');
@@ -72,7 +73,7 @@ function setToolAccess(isConnected) {
   }
 
   if (copyButton) {
-    copyButton.disabled = !isConnected;
+    copyButton.disabled = !isConnected || !outputArea?.textContent.trim();
   }
 }
 
@@ -120,6 +121,25 @@ function saveModelSelection(model) {
   }
 
   return selectedModel;
+}
+
+function loadTargetLanguage() {
+  const savedLanguage = localStorage.getItem(TARGET_LANGUAGE_STORAGE_KEY) || 'English';
+  if (targetLanguageInput) {
+    targetLanguageInput.value = savedLanguage;
+  }
+  return savedLanguage;
+}
+
+function saveTargetLanguage(language) {
+  const safeLanguage = language || 'English';
+  localStorage.setItem(TARGET_LANGUAGE_STORAGE_KEY, safeLanguage);
+
+  if (targetLanguageInput) {
+    targetLanguageInput.value = safeLanguage;
+  }
+
+  return safeLanguage;
 }
 
 /**
@@ -230,7 +250,8 @@ function createPrompt(action, inputText, targetLanguage) {
 }
 
 function updateActionSettings() {
-  targetLanguageRow.hidden = actionSelect.value !== 'translate';
+  const action = actionSelect.value;
+  targetLanguageRow.hidden = action !== 'translate';
 
   const descriptions = {
     explain: 'Create a concise summary of the text.',
@@ -239,7 +260,7 @@ function updateActionSettings() {
     translate: 'Translate the text into your selected language while keeping the meaning intact.'
   };
 
-  actionDescription.textContent = descriptions[actionSelect.value] || '';
+  actionDescription.textContent = descriptions[action] || '';
 }
 
 async function pollinationsRequest(apiKey, prompt, model = 'mistral') {
@@ -302,7 +323,7 @@ async function handleRun(event) {
   const apiKey = localStorage.getItem(STORAGE_KEY);
   const text = textInput?.value.trim() || '';
   const action = actionSelect?.value || 'explain';
-  const targetLanguage = targetLanguageInput?.value.trim() || '';
+  const targetLanguage = saveTargetLanguage(targetLanguageInput?.value.trim() || 'English');
   const model = saveModelSelection(modelSelect?.value || localStorage.getItem(MODEL_STORAGE_KEY) || 'mistral');
 
   if (!apiKey) {
@@ -331,6 +352,9 @@ async function handleRun(event) {
   try {
     const result = await pollinationsRequest(apiKey, prompt, model);
     if (outputArea) outputArea.textContent = result;
+    if (copyButton) {
+      copyButton.disabled = false;
+    }
     clearError();
   } catch (error) {
     showError(error?.message || 'An unexpected error occurred.');
@@ -375,9 +399,11 @@ function handleCopy() {
 function init() {
   loadApiKey();
   loadModelSelection();
+  loadTargetLanguage();
   updateActionSettings();
   if (actionSelect) actionSelect.addEventListener('change', updateActionSettings);
   if (modelSelect) modelSelect.addEventListener('change', () => saveModelSelection(modelSelect.value));
+  if (targetLanguageInput) targetLanguageInput.addEventListener('input', () => saveTargetLanguage(targetLanguageInput.value));
   if (authButton) authButton.addEventListener('click', handleAuthClick);
   if (saveKeyButton) saveKeyButton.addEventListener('click', handleSaveApiKey);
   if (clearKeyButton) clearKeyButton.addEventListener('click', handleClearApiKey);
