@@ -24,6 +24,7 @@ import {
   createCancelButton,
   handleCopy,
   updateCopyButtonState,
+  checkOnlineStatus,
 } from './ui.js';
 import {
   loadApiKey,
@@ -163,6 +164,8 @@ async function init() {
   if (hint) {
     hint.textContent = isMac ? '⌘+Enter' : 'Ctrl+Enter';
   }
+  
+  checkOnlineStatus();
 }
 
 init();

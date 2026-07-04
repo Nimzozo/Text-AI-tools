@@ -538,3 +538,15 @@ textarea {
   align-items: center;
   gap: 0.5rem;
 }
+
+.offline-banner {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  padding: 0.5rem;
+  border-radius: 4px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 1000;
+}

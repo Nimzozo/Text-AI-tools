@@ -140,6 +140,17 @@ export function setAuthStatus(apiKey) {
   setToolAccess(isConnected);
 }
 
+export function checkOnlineStatus() {
+  const isOnline = navigator.onLine;
+  if (isOnline) {
+    clearError();
+    document.querySelector('.offline-banner')?.classList.add('hidden');
+  } else {
+    showError('You are offline. Please check your connection and try again.');
+    document.querySelector('.offline-banner')?.classList.remove('hidden');
+  }
+}
+
 function updateAuthNote(isConnected, authMethod) {
   if (!dom.authNote) return;
   if (!isConnected) {
