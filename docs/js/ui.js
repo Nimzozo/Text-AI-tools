@@ -43,8 +43,10 @@ export function updateActionSettings() {
 
 export function updateCharCounter() {
   if (!dom.charCounter || !dom.textInput) return;
-  const len = dom.textInput.value.length;
-  dom.charCounter.textContent = `${len.toLocaleString()} character${len !== 1 ? 's' : ''}`;
+  const text = dom.textInput.value;
+  const chars = text.length;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  dom.charCounter.textContent = `${chars.toLocaleString()} character${chars !== 1 ? 's' : ''} · ${words.toLocaleString()} word${words !== 1 ? 's' : ''}`;
 }
 
 export function getPreferredTheme() {
