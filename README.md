@@ -2,6 +2,7 @@
 
 # text-ai-tools
 
+![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Pollinations badge](https://img.shields.io/badge/Built%20with-Pollinations-8a2be2?style=for-the-badge&logoColor=white&labelColor=6a0dad) 
 
 **text-ai-tools** is a lightweight, browser-based toolkit for explaining, formatting, improving, and translating text using the [Pollinations API](https://pollinations.ai). It is designed for fast, no-install AI text workflows and works with either OAuth login or a saved API key.
@@ -20,7 +21,7 @@
 
 ## 🚀 Usage
 
-1. Visit the live demo at [Text-AI-Tools](https://nimzozo.github.io/text-ai-tools/).
+1. Visit the live demo at [text-ai-tools](https://nimzozo.github.io/text-ai-tools/).
 2. Connect to the Pollinations API.
 3. Enter your text and select the desired tool.
 4. Click the "Run" button to process the text.
