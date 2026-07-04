@@ -5,8 +5,10 @@ import {
   saveLastAction,
   saveTargetLanguage,
   saveModelSelection,
+  loadApiKeyFromStorage,
   loadTargetLanguage,
   loadLastAction,
+  loadModelSelection,
 } from './storage.js';
 import { createPrompt, validateOutput } from './prompts.js';
 import { pollinationsRequest, loadModelSelectionIntoUI } from './api.js';
@@ -35,12 +37,11 @@ async function handleRun(event) {
   event.preventDefault();
   clearError();
 
-  const apiKey = localStorage.getItem('pollinationsApiKey');
+  const apiKey = loadApiKeyFromStorage();
   const text = dom.textInput?.value.trim() || '';
   const action = dom.actionSelect?.value || 'explain';
   const targetLanguage = saveTargetLanguage(dom.targetLanguageInput?.value.trim() || 'English');
-  const model = saveModelSelection(dom.modelSelect?.value || localStorage.getItem('pollinationsModel') || 'mistral');
-
+  const model = saveModelSelection(dom.modelSelect?.value || loadModelSelection() || 'mistral');
   if (!apiKey) { showError('Please connect to Pollinations or save your API key before running.'); return; }
   if (!text) { showError('Please paste or type some text to process.'); return; }
   if (action === 'translate' && !targetLanguage) { showError('Please enter a target language for translation.'); return; }

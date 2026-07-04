@@ -1,5 +1,5 @@
 import * as dom from './dom.js';
-import { loadAuthMethod, saveLastAction } from './storage.js';
+import { loadAuthMethod, saveLastAction, loadApiKeyFromStorage } from './storage.js';
 
 export function showError(message) {
   const text = message || 'Something went wrong. Please try again.';
@@ -94,7 +94,7 @@ export function handleCopy() {
 export function updateCopyButtonState() {
   if (!dom.copyButton) return;
   const hasOutput = !!dom.outputArea?.textContent.trim();
-  const isConnected = !!localStorage.getItem('pollinationsApiKey');
+  const isConnected = !!loadApiKeyFromStorage();
   dom.copyButton.disabled = !hasOutput || !isConnected;
 }
 
