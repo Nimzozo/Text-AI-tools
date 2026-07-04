@@ -153,6 +153,12 @@ async function init() {
   });
   dom.copyButton?.addEventListener('click', handleCopy);
   dom.errorDismiss?.addEventListener('click', (e) => { e.preventDefault(); clearError(); });
+  
+  const isMac = navigator.platform.includes('Mac');
+  const hint = document.getElementById('keyboard-hint');
+  if (hint) {
+    hint.textContent = isMac ? '⌘+Enter' : 'Ctrl+Enter';
+  }
 }
 
 init();
