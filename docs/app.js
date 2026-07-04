@@ -9,8 +9,12 @@ const authButton = document.querySelector('#auth-button');
 const authStatus = document.querySelector('#auth-status');
 const authNote = document.querySelector('#auth-note');
 const apiKeyInput = document.querySelector('#api-key-input');
+const revealKeyButton = document.querySelector('#reveal-key-button');
 const saveKeyButton = document.querySelector('#save-key-button');
 const clearKeyButton = document.querySelector('#clear-key-button');
+const clearInputButton = document.querySelector('#clear-input-button');
+const charCounter = document.querySelector('#char-counter');
+const themeToggle = document.querySelector('#theme-toggle');
 const toolForm = document.querySelector('#tool-form');
 const actionSelect = document.querySelector('#tool-action');
 const actionDescription = document.querySelector('#action-description');
@@ -374,8 +378,6 @@ function showError(message) {
     }
     msg.textContent = text;
     errorBanner.hidden = false;
-    errorBanner.setAttribute('role', 'alert');
-    errorBanner.setAttribute('aria-live', 'polite');
     // If message is short and single-line, collapse to one-line with ellipsis
     const isShort = text.length <= 80 && !text.includes('\n');
     if (isShort) {
@@ -482,10 +484,11 @@ function updateActionSettings() {
   saveLastAction(action);
 }
 
-async function pollinationsRequest(apiKey, prompt, model = 'mistral') {
+async function pollinationsRequest(apiKey, prompt, model = 'mistral', { onChunk, signal } = {}) {
   const endpoint = 'https://gen.pollinations.ai/text';
   const payload = {
     model: model || 'mistral',
+    stream: Boolean(onChunk),
     messages: [
       {
         role: 'user',
@@ -493,6 +496,7 @@ async function pollinationsRequest(apiKey, prompt, model = 'mistral') {
       }
     ]
   };
+
   let response;
   try {
     response = await fetch(endpoint, {
@@ -501,16 +505,19 @@ async function pollinationsRequest(apiKey, prompt, model = 'mistral') {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal
     });
   } catch (networkError) {
+    if (networkError.name === 'AbortError') {
+      throw new DOMException('Aborted', 'AbortError');
+    }
     throw new Error('Network error. Check your connection and try again.');
   }
 
-  const text = await response.text();
-  const contentType = response.headers.get('content-type') || '';
-
   if (!response.ok) {
+    const text = await response.text();
+    const contentType = response.headers.get('content-type') || '';
     let message = response.statusText || `Request failed with status ${response.status}`;
     if (contentType.includes('application/json')) {
       try {
@@ -523,6 +530,51 @@ async function pollinationsRequest(apiKey, prompt, model = 'mistral') {
     throw new Error(message);
   }
 
+  // Streaming mode
+  if (onChunk && response.body) {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fullText = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || !trimmed.startsWith('data: ')) continue;
+        const data = trimmed.slice(6);
+        if (data === '[DONE]') continue;
+
+        try {
+          const parsed = JSON.parse(data);
+          const content = parsed.choices?.[0]?.delta?.content || parsed.choices?.[0]?.text || '';
+          if (content) {
+            fullText += content;
+            onChunk(fullText, content);
+          }
+        } catch (e) {
+          // If it's not JSON, it might be raw text content
+          if (data) {
+            fullText += data;
+            onChunk(fullText, data);
+          }
+        }
+      }
+    }
+
+    return fullText;
+  }
+
+  // Non-streaming mode
+  const text = await response.text();
+  const contentType = response.headers.get('content-type') || '';
+
   if (contentType.includes('application/json')) {
     try {
       const data = JSON.parse(text);
@@ -533,6 +585,22 @@ async function pollinationsRequest(apiKey, prompt, model = 'mistral') {
   }
 
   return text.trim();
+}
+
+let currentAbortController = null;
+
+function createCancelButton() {
+  const btn = document.createElement('button');
+  btn.id = 'cancel-button';
+  btn.className = 'button secondary cancel-button';
+  btn.textContent = 'Cancel';
+  btn.type = 'button';
+  btn.addEventListener('click', () => {
+    if (currentAbortController) {
+      currentAbortController.abort();
+    }
+  });
+  return btn;
 }
 
 async function handleRun(event) {
@@ -565,14 +633,30 @@ async function handleRun(event) {
 
   const prompt = createPrompt(action, text, targetLanguage || 'English');
 
-  if (runButton) {
-    runButton.disabled = true;
-    runButton.textContent = 'Processing...';
-  }
+  // Set up streaming + cancellation
+  if (outputArea) outputArea.textContent = '';
+  if (outputHint) outputHint.textContent = 'Processing…';
   if (copyFeedback) copyFeedback.hidden = true;
 
+  if (runButton) {
+    runButton.disabled = true;
+    runButton.textContent = 'Processing…';
+    runButton.insertAdjacentElement('afterend', createCancelButton());
+  }
+  if (toolForm) toolForm.setAttribute('aria-busy', 'true');
+
+  currentAbortController = new AbortController();
+  const timeoutId = setTimeout(() => currentAbortController.abort(), 120_000);
+
   try {
-    const result = await pollinationsRequest(apiKey, prompt, model);
+    const result = await pollinationsRequest(apiKey, prompt, model, {
+      onChunk(fullText) {
+        if (outputArea) outputArea.textContent = fullText;
+      },
+      signal: currentAbortController.signal
+    });
+
+    clearTimeout(timeoutId);
 
     const validated = validateOutput(result);
     if (!validated.ok) {
@@ -586,9 +670,18 @@ async function handleRun(event) {
     updateCopyButtonState();
     clearError();
   } catch (error) {
-    showError(error?.message || 'An unexpected error occurred.');
-    if (outputHint) outputHint.textContent = 'Processing failed. Fix the issue and try again.';
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      if (outputHint) outputHint.textContent = 'Request was cancelled.';
+    } else {
+      showError(error?.message || 'An unexpected error occurred.');
+      if (outputHint) outputHint.textContent = 'Processing failed. Fix the issue and try again.';
+    }
   } finally {
+    currentAbortController = null;
+    const cancelBtn = document.querySelector('#cancel-button');
+    if (cancelBtn) cancelBtn.remove();
+    if (toolForm) toolForm.removeAttribute('aria-busy');
     if (runButton) {
       runButton.disabled = false;
       runButton.textContent = 'Run';
@@ -629,17 +722,50 @@ function handleCopy() {
 }
 
 function init() {
+  applyTheme(getPreferredTheme());
   loadApiKey();
   loadModelSelection();
   loadTargetLanguage();
   updateActionSettings();
+  updateCharCounter();
   if (actionSelect) actionSelect.addEventListener('change', updateActionSettings);
   if (modelSelect) modelSelect.addEventListener('change', () => saveModelSelection(modelSelect.value));
   if (targetLanguageInput) targetLanguageInput.addEventListener('input', () => saveTargetLanguage(targetLanguageInput.value));
   if (authButton) authButton.addEventListener('click', handleAuthClick);
+  if (revealKeyButton) {
+    revealKeyButton.addEventListener('click', () => {
+      const isPassword = apiKeyInput.type === 'password';
+      apiKeyInput.type = isPassword ? 'text' : 'password';
+      revealKeyButton.textContent = isPassword ? '🙈' : '👁';
+      revealKeyButton.setAttribute('aria-label', isPassword ? 'Hide API key' : 'Reveal API key');
+    });
+  }
   if (saveKeyButton) saveKeyButton.addEventListener('click', handleSaveApiKey);
   if (clearKeyButton) clearKeyButton.addEventListener('click', handleClearApiKey);
+  if (clearInputButton) {
+    clearInputButton.addEventListener('click', () => {
+      if (textInput) {
+        textInput.value = '';
+        textInput.focus();
+        updateCharCounter();
+      }
+    });
+  }
+  if (textInput) {
+    textInput.addEventListener('input', updateCharCounter);
+  }
+  if (themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
+  }
   if (toolForm) toolForm.addEventListener('submit', handleRun);
+  if (toolForm) {
+    toolForm.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        handleRun(e);
+      }
+    });
+  }
   if (copyButton) copyButton.addEventListener('click', handleCopy);
   if (errorDismiss) {
     errorDismiss.addEventListener('click', (e) => {
@@ -647,6 +773,32 @@ function init() {
       clearError();
     });
   }
+}
+
+function updateCharCounter() {
+  if (!charCounter || !textInput) return;
+  const len = textInput.value.length;
+  charCounter.textContent = `${len.toLocaleString()} character${len !== 1 ? 's' : ''}`;
+}
+
+function getPreferredTheme() {
+  const stored = localStorage.getItem('theme');
+  if (stored === 'dark' || stored === 'light') return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  if (themeToggle) {
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
 }
 
 init();
