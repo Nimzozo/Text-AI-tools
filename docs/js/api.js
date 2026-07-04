@@ -176,11 +176,11 @@ export async function validateApiKey(apiKey) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'mistral',
         messages: [{ role: 'user', content: 'hi' }],
       }),
     });
     // 401 or 403 means invalid key
+    // Any other status (200, 400, 404, 500…) means the key is authenticated
     if (res.status === 401 || res.status === 403) return false;
     return true;
   } catch {
