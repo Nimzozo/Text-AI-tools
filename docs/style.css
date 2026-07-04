@@ -595,6 +595,15 @@ select {
   line-height: var(--leading-relaxed);
 }
 
+/* Empty state placeholder */
+.output-display:empty::before {
+  content: "Your result will appear here…";
+  color: var(--text-muted);
+  opacity: 0.4;
+  font-style: italic;
+  pointer-events: none;
+}
+
 .output-footer {
   display: flex;
   align-items: center;
