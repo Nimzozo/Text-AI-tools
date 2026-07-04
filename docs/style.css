@@ -521,3 +521,20 @@ textarea {
     display: none;
   }
 }
+
+.char-warning {
+  font-size: 0.8rem;
+  color: var(--error-text);
+  font-weight: 600;
+}
+
+.char-warning[hidden] {
+  display: none !important;
+}
+
+.textarea-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}

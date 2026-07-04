@@ -46,7 +46,11 @@ async function handleRun(event) {
   if (!apiKey) { showError('Please connect to Pollinations or save your API key before running.'); return; }
   if (!text) { showError('Please paste or type some text to process.'); return; }
   if (action === 'translate' && !targetLanguage) { showError('Please enter a target language for translation.'); return; }
-
+  if (text.length > CONFIG.MAX_INPUT_LENGTH) {
+    showError(`Input text exceeds the ${CONFIG.MAX_INPUT_LENGTH.toLocaleString()} character limit. Please shorten it.`);
+    return;
+  }
+  
   saveLastInput(text);
   saveLastAction(action);
 
@@ -153,7 +157,7 @@ async function init() {
   });
   dom.copyButton?.addEventListener('click', handleCopy);
   dom.errorDismiss?.addEventListener('click', (e) => { e.preventDefault(); clearError(); });
-  
+
   const isMac = navigator.platform.includes('Mac');
   const hint = document.getElementById('keyboard-hint');
   if (hint) {

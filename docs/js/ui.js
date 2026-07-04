@@ -1,5 +1,6 @@
 import * as dom from './dom.js';
 import { loadAuthMethod, saveLastAction, loadApiKeyFromStorage } from './storage.js';
+import { CONFIG } from './config.js';
 
 export function showError(message) {
   const text = message || 'Something went wrong. Please try again.';
@@ -47,6 +48,21 @@ export function updateCharCounter() {
   const chars = text.length;
   const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   dom.charCounter.textContent = `${chars.toLocaleString()} character${chars !== 1 ? 's' : ''} · ${words.toLocaleString()} word${words !== 1 ? 's' : ''}`;
+
+  // Show warning when approaching the limit
+  const warning = document.getElementById('char-warning');
+  if (warning) {
+    if (chars > CONFIG.MAX_INPUT_LENGTH) {
+      warning.textContent = `⚠️ Exceeds ${CONFIG.MAX_INPUT_LENGTH.toLocaleString()} character limit`;
+      warning.hidden = false;
+    } else if (chars > CONFIG.MAX_INPUT_LENGTH * 0.9) {
+      const remaining = CONFIG.MAX_INPUT_LENGTH - chars;
+      warning.textContent = `⚠️ ${remaining.toLocaleString()} character${remaining !== 1 ? 's' : ''} remaining before limit`;
+      warning.hidden = false;
+    } else {
+      warning.hidden = true;
+    }
+  }
 }
 
 export function getPreferredTheme() {

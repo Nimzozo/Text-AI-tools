@@ -13,6 +13,7 @@ export const CONFIG = {
   API_ENDPOINT: 'https://gen.pollinations.ai/text',
   MODELS_ENDPOINT: 'https://gen.pollinations.ai/text/models',
   MAX_OUTPUT_LENGTH: 200_000,
+  MAX_INPUT_LENGTH: 50_000,
 };
 
 export const DEFAULT_MODEL_OPTIONS = ['mistral', 'openai', 'llama'];
