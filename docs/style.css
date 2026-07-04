@@ -126,15 +126,6 @@ textarea {
   margin-bottom: 1rem;
 }
 
-.eyebrow {
-  margin: 0 0 0.5rem;
-  color: var(--accent);
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
 .card-header h2 {
   margin: 0;
   color: var(--text);
@@ -188,22 +179,6 @@ textarea {
 
 .button.secondary {
   background: var(--button-secondary-bg);
-}
-
-.button.small {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.85rem;
-}
-
-.button.ghost {
-  background: transparent;
-  border-color: transparent;
-  color: var(--text-muted);
-}
-
-.button.ghost:hover {
-  color: var(--text);
-  background: transparent;
 }
 
 .icon-button {
@@ -467,16 +442,6 @@ textarea {
   background: #7f1d1d;
 }
 
-.feedback-text {
-  margin: 0.75rem 0 0;
-  color: #059669;
-  font-size: 0.95rem;
-}
-
-[data-theme="dark"] .feedback-text {
-  color: #34d399;
-}
-
 .footer {
   margin-top: 2rem;
   text-align: center;
@@ -506,22 +471,6 @@ textarea {
   }
 }
 
-.keyboard-hint {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  background: var(--button-secondary-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 6px;
-  padding: 0.25rem 0.6rem;
-  font-family: ui-monospace, monospace;
-}
-
-@media (pointer: coarse) {
-  .keyboard-hint {
-    display: none;
-  }
-}
-
 .char-warning {
   font-size: 0.8rem;
   color: var(--error-text);
@@ -539,14 +488,4 @@ textarea {
   gap: 0.5rem;
 }
 
-.offline-banner {
-  background-color: var(--error-bg);
-  color: var(--error-text);
-  padding: 0.5rem;
-  border-radius: 4px;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 1000;
-}
+ 

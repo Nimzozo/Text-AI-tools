@@ -22,9 +22,6 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="offline-banner" class="offline-banner" hidden>
-      <p>You are offline. Please check your connection and try again.</p>
-    </div>
     <div class="app-shell">
       <header class="header">
         <div class="brand-row">
@@ -44,7 +41,6 @@
         </div>
         <section class="card auth-card">
           <div class="card-header">
-            <p class="eyebrow">Authentication</p>
             <h2>Connect or save your API key</h2>
           </div>
 
@@ -74,15 +70,11 @@
 
         <section id="tool-content" class="card tool-card">
           <div class="card-header">
-            <p class="eyebrow">Text tool</p>
             <h2>Enter text and choose an action</h2>
           </div>
 
           <form id="tool-form" class="tool-form">
-            <div class="label-row">
             <label class="field-label" for="input-text">Input text</label>
-            <button id="clear-input-button" class="button small ghost" type="button">Clear</button>
-          </div>
           <textarea id="input-text" rows="12" placeholder="Paste your text here..."></textarea>
           <div class="textarea-footer">
             <span id="char-counter" class="char-counter">0 characters · 0 words</span>
@@ -100,15 +92,6 @@
                 </select>
               </div>
 
-              <div class="field-block">
-                <label class="field-label" for="model-select">Model</label>
-                <select id="model-select">
-                  <option value="mistral">Mistral</option>
-                  <option value="openai">OpenAI</option>
-                  <option value="llama">Llama</option>
-                </select>
-              </div>
-
               <div class="field-block" id="translate-language-row">
                 <label class="field-label" for="target-language">Target language</label>
                 <input id="target-language" type="text" placeholder="English" />
@@ -119,13 +102,11 @@
 
             <div class="run-row">
               <button id="run-button" class="button primary" type="submit">Run</button>
-              <span id="keyboard-hint" class="keyboard-hint">Ctrl+Enter</span>
             </div>
           </form>
 
           <div class="result-panel card output-card">
             <div class="panel-header">
-              <p class="eyebrow">Result</p>
               <h2 class="visually-hidden">Output result</h2>
             </div>
             <div id="output-display" class="output-display" aria-live="polite" role="region" aria-label="Output result"></div>
@@ -133,7 +114,6 @@
               <span id="output-hint" class="output-hint">Results appear after processing.</span>
               <button id="copy-button" class="button secondary" type="button">Copy</button>
             </div>
-            <div id="copy-feedback" class="feedback-text" hidden>Copied to clipboard</div>
           </div>
         </section>
       </main>

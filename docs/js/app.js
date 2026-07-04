@@ -4,15 +4,13 @@ import {
   saveLastInput,
   saveLastAction,
   saveTargetLanguage,
-  saveModelSelection,
   loadApiKeyFromStorage,
   loadTargetLanguage,
   loadLastAction,
-  loadModelSelection,
   loadLastInput,
 } from './storage.js';
 import { createPrompt, validateOutput } from './prompts.js';
-import { pollinationsRequest, loadModelSelectionIntoUI } from './api.js';
+import { pollinationsRequest } from './api.js';
 import {
   showError,
   clearError,
@@ -24,7 +22,6 @@ import {
   createCancelButton,
   handleCopy,
   updateCopyButtonState,
-  checkOnlineStatus,
 } from './ui.js';
 import {
   loadApiKey,
@@ -43,7 +40,7 @@ async function handleRun(event) {
   const text = dom.textInput?.value.trim() || '';
   const action = dom.actionSelect?.value || 'explain';
   const targetLanguage = saveTargetLanguage(dom.targetLanguageInput?.value.trim() || 'English');
-  const model = saveModelSelection(dom.modelSelect?.value || loadModelSelection() || 'mistral');
+  const model = 'mistral';
   if (!apiKey) { showError('Please connect to Pollinations or save your API key before running.'); return; }
   if (!text) { showError('Please paste or type some text to process.'); return; }
   if (action === 'translate' && !targetLanguage) { showError('Please enter a target language for translation.'); return; }
@@ -59,7 +56,6 @@ async function handleRun(event) {
 
   if (dom.outputArea) dom.outputArea.textContent = '';
   if (dom.outputHint) dom.outputHint.textContent = 'Processing…';
-  if (dom.copyFeedback) dom.copyFeedback.hidden = true;
 
   if (dom.runButton) {
     dom.runButton.disabled = true;
@@ -111,7 +107,6 @@ async function handleRun(event) {
 async function init() {
   applyTheme(getPreferredTheme());
   await loadApiKey();
-  loadModelSelectionIntoUI();
 
   const savedLang = loadTargetLanguage();
   if (dom.targetLanguageInput) dom.targetLanguageInput.value = savedLang;
@@ -125,7 +120,6 @@ async function init() {
   }
 
   dom.actionSelect?.addEventListener('change', updateActionSettings);
-  dom.modelSelect?.addEventListener('change', () => saveModelSelection(dom.modelSelect.value));
   dom.targetLanguageInput?.addEventListener('input', () => saveTargetLanguage(dom.targetLanguageInput.value));
   dom.authButton?.addEventListener('click', handleAuthClick);
 
@@ -139,14 +133,6 @@ async function init() {
   dom.saveKeyButton?.addEventListener('click', handleSaveApiKey);
   dom.clearKeyButton?.addEventListener('click', handleClearApiKey);
 
-  dom.clearInputButton?.addEventListener('click', () => {
-    if (dom.textInput) {
-      dom.textInput.value = '';
-      dom.textInput.focus();
-      updateCharCounter();
-    }
-  });
-
   dom.textInput?.addEventListener('input', updateCharCounter);
   dom.themeToggle?.addEventListener('click', toggleTheme);
   dom.toolForm?.addEventListener('submit', handleRun);
@@ -158,14 +144,6 @@ async function init() {
   });
   dom.copyButton?.addEventListener('click', handleCopy);
   dom.errorDismiss?.addEventListener('click', (e) => { e.preventDefault(); clearError(); });
-
-  const isMac = navigator.platform.includes('Mac');
-  const hint = document.getElementById('keyboard-hint');
-  if (hint) {
-    hint.textContent = isMac ? '⌘+Enter' : 'Ctrl+Enter';
-  }
-  
-  checkOnlineStatus();
 }
 
 init();

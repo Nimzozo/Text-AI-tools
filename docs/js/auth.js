@@ -7,7 +7,7 @@ import {
   loadAuthMethod,
 } from './storage.js';
 import { showError, clearError, setAuthStatus } from './ui.js';
-import { refreshModelOptions, loadModelSelectionIntoUI, validateApiKey } from './api.js';
+import { validateApiKey } from './api.js';
 
 export async function loadApiKey() {
   const params = new URLSearchParams(location.hash.slice(1));
@@ -55,8 +55,6 @@ export async function saveApiKey(key) {
       showError('Invalid API key. Please check and try again.');
       return;
     }
-  } else {
-    loadModelSelectionIntoUI();
   }
 
   setAuthStatus(key);

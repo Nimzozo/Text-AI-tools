@@ -100,10 +100,6 @@ export function handleCopy() {
   if (!text) return;
   navigator.clipboard.writeText(text)
     .then(() => {
-      if (dom.copyFeedback) {
-        dom.copyFeedback.hidden = false;
-        setTimeout(() => { dom.copyFeedback.hidden = true; }, 2000);
-      }
       if (dom.outputHint) dom.outputHint.textContent = 'Result copied to clipboard.';
     })
     .catch(() => showError('Unable to copy result.'));
@@ -140,17 +136,6 @@ export function setAuthStatus(apiKey) {
   setToolAccess(isConnected);
 }
 
-export function checkOnlineStatus() {
-  const isOnline = navigator.onLine;
-  if (isOnline) {
-    clearError();
-    document.querySelector('.offline-banner')?.classList.add('hidden');
-  } else {
-    showError('You are offline. Please check your connection and try again.');
-    document.querySelector('.offline-banner')?.classList.remove('hidden');
-  }
-}
-
 function updateAuthNote(isConnected, authMethod) {
   if (!dom.authNote) return;
   if (!isConnected) {
@@ -168,7 +153,6 @@ function setToolAccess(isConnected) {
   if (dom.toolContent) dom.toolContent.hidden = !isConnected;
   if (dom.textInput) dom.textInput.disabled = !isConnected;
   if (dom.actionSelect) dom.actionSelect.disabled = !isConnected;
-  if (dom.modelSelect) dom.modelSelect.disabled = !isConnected;
   if (dom.targetLanguageInput) dom.targetLanguageInput.disabled = !isConnected;
   if (dom.runButton) dom.runButton.disabled = !isConnected;
   updateCopyButtonState();

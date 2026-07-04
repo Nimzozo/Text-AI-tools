@@ -1,7 +1,6 @@
 import {
   STORAGE_KEY,
   AUTH_METHOD_STORAGE_KEY,
-  MODEL_STORAGE_KEY,
   TARGET_LANGUAGE_STORAGE_KEY,
   LAST_INPUT_STORAGE_KEY,
   LAST_ACTION_STORAGE_KEY,
@@ -31,16 +30,6 @@ export function saveAuthMethod(method) {
   }
   localStorage.removeItem(AUTH_METHOD_STORAGE_KEY);
   return '';
-}
-
-export function loadModelSelection() {
-  return localStorage.getItem(MODEL_STORAGE_KEY) || 'mistral';
-}
-
-export function saveModelSelection(model) {
-  const selected = model || 'mistral';
-  localStorage.setItem(MODEL_STORAGE_KEY, selected);
-  return selected;
 }
 
 export function loadTargetLanguage() {
