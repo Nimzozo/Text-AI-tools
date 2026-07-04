@@ -9,6 +9,7 @@ import {
   loadTargetLanguage,
   loadLastAction,
   loadModelSelection,
+  loadLastInput,
 } from './storage.js';
 import { createPrompt, validateOutput } from './prompts.js';
 import { pollinationsRequest, loadModelSelectionIntoUI } from './api.js';
@@ -112,6 +113,11 @@ async function init() {
 
   updateActionSettings();
   updateCharCounter();
+  const savedInput = loadLastInput();
+  if (dom.textInput && savedInput) {
+    dom.textInput.value = savedInput;
+    updateCharCounter();
+  }
 
   dom.actionSelect?.addEventListener('change', updateActionSettings);
   dom.modelSelect?.addEventListener('change', () => saveModelSelection(dom.modelSelect.value));
