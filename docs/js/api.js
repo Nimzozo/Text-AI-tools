@@ -165,3 +165,25 @@ export async function pollinationsRequest(apiKey, prompt, model = 'mistral', { o
   }
   return text.trim();
 }
+
+export async function validateApiKey(apiKey) {
+  if (!apiKey) return false;
+  try {
+    const res = await fetch(CONFIG.API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'mistral',
+        messages: [{ role: 'user', content: 'hi' }],
+      }),
+    });
+    // 401 or 403 means invalid key
+    if (res.status === 401 || res.status === 403) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
