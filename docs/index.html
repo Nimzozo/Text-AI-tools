@@ -39,6 +39,7 @@
           <span class="error-message" aria-live="assertive"></span>
           <button id="error-dismiss" class="error-dismiss" aria-label="Dismiss error">✕</button>
         </div>
+
         <section class="card auth-card">
           <div class="card-header">
             <h2>Connect or save your API key</h2>
@@ -46,10 +47,10 @@
 
           <div class="status-row">
             <p id="auth-status" class="auth-status">Not connected</p>
-            <p id="auth-note" class="note">Please connect or paste your Pollinations API key to continue.</p>
+            <p id="auth-note" class="auth-note">Please connect or paste your Pollinations API key to continue.</p>
           </div>
 
-          <button id="auth-button" class="button primary">Connect with Pollinations</button>
+          <button id="auth-button" class="button primary auth-connect-btn">Connect with Pollinations</button>
 
           <div class="divider"><span>or</span></div>
 
@@ -64,8 +65,7 @@
             <button id="clear-key-button" class="button secondary" type="button">Clear</button>
           </div>
 
-          <p class="note">You can use either OAuth connect or paste your key directly.</p>
-          <p class="note security-note">⚠️ Your key is stored in your browser's local storage. Avoid using this app on shared or public devices.</p>
+          <p class="auth-footnote">Your key is stored in your browser's local storage only.</p>
         </section>
 
         <section id="tool-content" class="card tool-card">
