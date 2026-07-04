@@ -59,7 +59,7 @@ async function handleRun(event) {
 
   if (dom.runButton) {
     dom.runButton.disabled = true;
-    dom.runButton.textContent = 'Processing…';
+    dom.runButton.setAttribute('aria-busy', 'true');
     dom.runButton.insertAdjacentElement('afterend', createCancelButton(() => currentAbortController?.abort()));
   }
   if (dom.toolForm) dom.toolForm.setAttribute('aria-busy', 'true');
@@ -99,7 +99,7 @@ async function handleRun(event) {
     if (dom.toolForm) dom.toolForm.removeAttribute('aria-busy');
     if (dom.runButton) {
       dom.runButton.disabled = false;
-      dom.runButton.textContent = 'Run';
+      dom.runButton.removeAttribute('aria-busy');
     }
   }
 }
