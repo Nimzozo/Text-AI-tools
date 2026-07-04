@@ -1,0 +1,27 @@
+export const $ = (sel, ctx = document) => ctx.querySelector(sel);
+
+export const authButton = $('#auth-button');
+export const authStatus = $('#auth-status');
+export const authNote = $('#auth-note');
+export const apiKeyInput = $('#api-key-input');
+export const revealKeyButton = $('#reveal-key-button');
+export const saveKeyButton = $('#save-key-button');
+export const clearKeyButton = $('#clear-key-button');
+export const clearInputButton = $('#clear-input-button');
+export const charCounter = $('#char-counter');
+export const themeToggle = $('#theme-toggle');
+export const toolForm = $('#tool-form');
+export const actionSelect = $('#tool-action');
+export const actionDescription = $('#action-description');
+export const targetLanguageRow = $('#translate-language-row');
+export const outputArea = $('#output-display');
+export const outputHint = $('#output-hint');
+export const copyButton = $('#copy-button');
+export const runButton = $('#run-button');
+export const errorBanner = $('#error-banner');
+export const errorDismiss = $('#error-dismiss');
+export const copyFeedback = $('#copy-feedback');
+export const textInput = $('#input-text');
+export const targetLanguageInput = $('#target-language');
+export const modelSelect = $('#model-select');
+export const toolContent = $('#tool-content');
