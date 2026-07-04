@@ -59,7 +59,7 @@ export function saveModelSelection(model) {
 }
 
 export async function refreshModelOptions(apiKey) {
-  if (!modelSelect) return '';
+  if (!modelSelect) return false;
   const savedModel = loadModelSelection();
 
   try {
@@ -69,11 +69,13 @@ export async function refreshModelOptions(apiKey) {
     });
     if (!res.ok) throw new Error(`Unable to load models (${res.status})`);
     const data = await res.json();
-    return setModelOptions(getModelOptionsFromPayload(data), savedModel);
+    setModelOptions(getModelOptionsFromPayload(data), savedModel);
+    return true;   // ← key is valid
   } catch {
-    return setModelOptions(DEFAULT_MODEL_OPTIONS, savedModel);
+    setModelOptions(DEFAULT_MODEL_OPTIONS, savedModel);
+    return false;  // ← key is invalid
   }
-}
+} 
 
 export async function pollinationsRequest(apiKey, prompt, model = 'mistral', { onChunk, signal } = {}) {
   const payload = {

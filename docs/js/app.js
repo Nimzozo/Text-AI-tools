@@ -102,9 +102,9 @@ async function handleRun(event) {
   }
 }
 
-function init() {
+async function init() {
   applyTheme(getPreferredTheme());
-  loadApiKey();
+  await loadApiKey();
   loadModelSelectionIntoUI();
 
   const savedLang = loadTargetLanguage();

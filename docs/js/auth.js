@@ -9,7 +9,7 @@ import {
 import { showError, clearError, setAuthStatus } from './ui.js';
 import { refreshModelOptions, loadModelSelectionIntoUI } from './api.js';
 
-export function loadApiKey() {
+export async function loadApiKey() {
   const params = new URLSearchParams(location.hash.slice(1));
   const apiKeyFromUrl = params.get('api_key');
   const denied = params.has('accessDenied') || location.hash.includes('accessDenied');
@@ -22,7 +22,7 @@ export function loadApiKey() {
 
   if (apiKeyFromUrl) {
     saveAuthMethod('oauth');
-    saveApiKey(apiKeyFromUrl);
+    await saveApiKey(apiKeyFromUrl);
     window.history.replaceState({}, document.title, location.pathname + location.search);
     return;
   }
@@ -38,21 +38,31 @@ export function loadApiKey() {
   setAuthStatus(apiKey);
 }
 
-export function saveApiKey(key) {
+export async function saveApiKey(key) {
   saveApiKeyToStorage(key);
   if (dom.apiKeyInput) {
     dom.apiKeyInput.value = key || '';
     dom.apiKeyInput.type = 'password';
   }
-  setAuthStatus(key);
+
   if (key) {
-    void refreshModelOptions(key);
+    const isValid = await refreshModelOptions(key);
+    if (!isValid) {
+      // Key is invalid — clear it and show error
+      saveApiKeyToStorage('');
+      if (dom.apiKeyInput) dom.apiKeyInput.value = '';
+      setAuthStatus('');
+      showError('Invalid API key. Please check and try again.');
+      return;
+    }
   } else {
     loadModelSelectionIntoUI();
   }
+
+  setAuthStatus(key);
 }
 
-export function handleSaveApiKey() {
+export async function handleSaveApiKey() {
   clearError();
   const key = dom.apiKeyInput?.value.trim() || '';
   if (!key) {
@@ -60,14 +70,14 @@ export function handleSaveApiKey() {
     return;
   }
   saveAuthMethod('apiKey');
-  saveApiKey(key);
+  await saveApiKey(key);
 }
 
-export function handleClearApiKey() {
+export async function handleClearApiKey() {
   clearError();
   if (dom.apiKeyInput) dom.apiKeyInput.value = '';
   saveAuthMethod('');
-  saveApiKey('');
+  await saveApiKey('');
 }
 
 export function handleAuthClick() {
