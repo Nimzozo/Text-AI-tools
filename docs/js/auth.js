@@ -35,10 +35,18 @@ export async function loadApiKey() {
   if (apiKey && !loadAuthMethod()) {
     saveAuthMethod('apiKey');
   }
-  setAuthStatus(apiKey);
+
+  // Validate the stored key before showing "Connected".
+  // If invalid or transient, saveApiKey handles clearing/status itself.
+  if (apiKey) {
+    await saveApiKey(apiKey);
+  } else {
+    setAuthStatus('');
+  }
 }
 
 export async function saveApiKey(key) {
+  // Persist the key first so a transient error doesn't lose it.
   saveApiKeyToStorage(key);
   if (dom.apiKeyInput) {
     dom.apiKeyInput.value = key || '';
@@ -46,13 +54,29 @@ export async function saveApiKey(key) {
   }
 
   if (key) {
-    const isValid = await validateApiKey(key);
-    if (!isValid) {
-      // Key is invalid — clear it and show error
-      saveApiKeyToStorage('');
-      if (dom.apiKeyInput) dom.apiKeyInput.value = '';
-      setAuthStatus('');
-      showError('Invalid API key. Please check and try again.');
+    // Show a pending state while we verify with the server.
+    if (dom.authStatus) {
+      dom.authStatus.textContent = 'Verifying API key…';
+      dom.authStatus.classList.remove('status-connected', 'status-disconnected');
+    }
+    if (dom.authNote) {
+      dom.authNote.textContent = 'Checking your API key with the server…';
+    }
+
+    try {
+      const isValid = await validateApiKey(key);
+      if (!isValid) {
+        // Key is definitively invalid — clear it and show error
+        saveApiKeyToStorage('');
+        if (dom.apiKeyInput) dom.apiKeyInput.value = '';
+        setAuthStatus('');
+        showError('Invalid API key. Please check and try again.');
+        return;
+      }
+    } catch (err) {
+      // Transient error (server down / rate-limited) — keep the key, surface the message
+      showError(err?.message || 'Could not verify key. Please try again.');
+      setAuthStatus(key);
       return;
     }
   }

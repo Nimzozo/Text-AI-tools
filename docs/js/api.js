@@ -91,22 +91,30 @@ export async function pollinationsRequest(apiKey, prompt, model = 'mistral', { o
 
 export async function validateApiKey(apiKey) {
   if (!apiKey) return false;
+  let res;
   try {
-    const res = await fetch(CONFIG.API_ENDPOINT, {
+    res = await fetch(CONFIG.KEY_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: 'hi' }],
-      }),
+      }
     });
-    // 401 or 403 means invalid key
-    // Any other status (200, 400, 404, 500…) means the key is authenticated
-    if (res.status === 401 || res.status === 403) return false;
-    return true;
   } catch {
-    return false;
+    // Network error — transient, not the user's fault
+    throw new Error('Could not verify key — server unavailable. Try again.');
   }
+
+  // 401 = Missing or invalid API key
+  if (res.status === 401) return false;
+
+  // 5xx = transient (server error)
+  if (res.status >= 500) {
+    throw new Error('Could not verify key — server unavailable. Try again.');
+  }
+
+  // 200 = valid
+  if (res.ok) return true;
+  
+  return res;
 }
