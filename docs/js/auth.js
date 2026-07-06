@@ -66,7 +66,7 @@ export async function saveApiKey(key) {
     try {
       const isValid = await validateApiKey(key);
       if (!isValid) {
-        // Key is definitively invalid — clear it and show error
+        // Key is invalid — clear it and show error
         saveApiKeyToStorage('');
         if (dom.apiKeyInput) dom.apiKeyInput.value = '';
         setAuthStatus('');

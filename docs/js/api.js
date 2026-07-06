@@ -1,4 +1,5 @@
 import { CONFIG } from './config.js';
+import {showError} from './ui.js';
 
 export async function pollinationsRequest(apiKey, prompt, model = 'mistral', { onChunk, signal } = {}) {
   const payload = {
@@ -96,25 +97,13 @@ export async function validateApiKey(apiKey) {
     res = await fetch(CONFIG.KEY_ENDPOINT, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`
       }
     });
   } catch {
     // Network error — transient, not the user's fault
     throw new Error('Could not verify key — server unavailable. Try again.');
   }
-
-  // 401 = Missing or invalid API key
-  if (res.status === 401) return false;
-
-  // 5xx = transient (server error)
-  if (res.status >= 500) {
-    throw new Error('Could not verify key — server unavailable. Try again.');
-  }
-
-  // 200 = valid
-  if (res.ok) return true;
   
-  return res;
+  return (res.ok && res.status == 200);
 }
