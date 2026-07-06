@@ -50,7 +50,7 @@ export function updateCharCounter() {
   dom.charCounter.textContent = `${chars.toLocaleString()} character${chars !== 1 ? 's' : ''} · ${words.toLocaleString()} word${words !== 1 ? 's' : ''}`;
 
   // Show warning when approaching the limit
-  const warning = document.getElementById('char-warning');
+  const warning = dom.charWarning;
   if (warning) {
     if (chars > CONFIG.MAX_INPUT_LENGTH) {
       warning.textContent = `⚠️ Exceeds ${CONFIG.MAX_INPUT_LENGTH.toLocaleString()} character limit`;

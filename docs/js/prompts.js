@@ -49,7 +49,7 @@ export function validateOutput(output) {
   if (!text) {
     return { ok: false, message: 'The API returned an empty result. Please try again.' };
   }
-  if (text.length > 200_000) {
+if (text.length > CONFIG.MAX_OUTPUT_LENGTH) {
     return { ok: false, message: 'The result is unexpectedly large. Please try again or shorten your input.' };
   }
   return { ok: true, text };

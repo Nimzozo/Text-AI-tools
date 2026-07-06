@@ -22,3 +22,4 @@ export const errorDismiss = $('#error-dismiss');
 export const textInput = $('#input-text');
 export const targetLanguageInput = $('#target-language');
 export const toolContent = $('#tool-content');
+export const charWarning = $('#char-warning');
