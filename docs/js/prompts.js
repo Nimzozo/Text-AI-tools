@@ -1,3 +1,5 @@
+import { CONFIG } from './config.js';
+
 export function createPrompt(action, inputText, targetLanguage) {
   const safeInput = (inputText ?? '').toString().trim();
   const describeText = 'Text:\n\n' + safeInput;
