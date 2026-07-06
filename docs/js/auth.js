@@ -107,6 +107,7 @@ export function handleAuthClick() {
   const params = new URLSearchParams({
     redirect_uri: cleanRedirect,
     client_id: CONFIG.OAUTH_CLIENT_ID,
+    models: 'openai-fast gemma nova-fast llama-scout'
   });
   window.location.href = `https://enter.pollinations.ai/authorize?${params}`;
 }

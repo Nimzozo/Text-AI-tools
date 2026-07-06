@@ -108,17 +108,21 @@ async function init() {
   applyTheme(getPreferredTheme());
   await loadApiKey();
 
+  // Load stored action
+  const savedAction = loadLastAction();
+  if (dom.actionSelect) dom.actionSelect.value = savedAction;
+    updateActionSettings();
+
+  // Load stored language
   const savedLang = loadTargetLanguage();
   if (dom.targetLanguageInput) dom.targetLanguageInput.value = savedLang;
 
-  updateActionSettings();
-  updateCharCounter();
+  // Load stored input
   const savedInput = loadLastInput();
-  if (dom.textInput && savedInput) {
-    dom.textInput.value = savedInput;
-    updateCharCounter();
-  }
+  if (dom.textInput && savedInput) dom.textInput.value = savedInput;
+  updateCharCounter();
 
+  // EventListeners
   dom.actionSelect?.addEventListener('change', updateActionSettings);
   dom.targetLanguageInput?.addEventListener('input', () => saveTargetLanguage(dom.targetLanguageInput.value));
   dom.authButton?.addEventListener('click', handleAuthClick);
@@ -132,7 +136,6 @@ async function init() {
 
   dom.saveKeyButton?.addEventListener('click', handleSaveApiKey);
   dom.clearKeyButton?.addEventListener('click', handleClearApiKey);
-
   dom.textInput?.addEventListener('input', updateCharCounter);
   dom.themeToggle?.addEventListener('click', toggleTheme);
   dom.toolForm?.addEventListener('submit', handleRun);
