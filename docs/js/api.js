@@ -95,7 +95,6 @@ export async function validateApiKey(apiKey) {
   let res;
   try {
     res = await fetch(CONFIG.KEY_ENDPOINT, {
-      method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`
       }
@@ -104,6 +103,6 @@ export async function validateApiKey(apiKey) {
     // Network error — transient, not the user's fault
     throw new Error('Could not verify key — server unavailable. Try again.');
   }
-  
+
   return (res.ok && res.status == 200);
 }
