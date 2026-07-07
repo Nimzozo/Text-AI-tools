@@ -1,9 +1,9 @@
 import { CONFIG } from './config.js';
 import {showError} from './ui.js';
 
-export async function pollinationsRequest(apiKey, prompt, model = 'mistral', { onChunk, signal } = {}) {
+export async function pollinationsRequest(apiKey, prompt, model, { onChunk, signal } = {}) {
   const payload = {
-    model: model || 'mistral',
+    model: model,
     stream: Boolean(onChunk),
     messages: [{ role: 'user', content: prompt }],
   };

@@ -40,7 +40,7 @@ async function handleRun(event) {
   const text = dom.textInput?.value.trim() || '';
   const action = dom.actionSelect?.value || 'explain';
   const targetLanguage = saveTargetLanguage(dom.targetLanguageInput?.value.trim() || 'English');
-  const model = 'mistral';
+  const model = 'nova-fast';
   if (!apiKey) { showError('Please connect to Pollinations or save your API key before running.'); return; }
   if (!text) { showError('Please paste or type some text to process.'); return; }
   if (action === 'translate' && !targetLanguage) { showError('Please enter a target language for translation.'); return; }
