@@ -103,35 +103,8 @@ button, input {
 }
 
 #app-shell {
-  position: relative;
   height: 100vh;
   margin: 0;
-}
-
-#app-header {
-  position: absolute;
-  margin-top: var(--space-6);
-  margin-left: var(--space-6);
-}
-
-#app-link {
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-}
-
-#app-logo {
-  margin: 0;
-  padding: 0;
-  width: 2.5rem;
-}
-
-#app-link h1 {
-  font-size: var(--text-2xl);
-  font-weight: 500;
-  color: var(--bg);
-  margin: 0;
-  padding: 0;
 }
 
 .main-grid {
@@ -153,6 +126,34 @@ button, input {
   background-repeat: no-repeat;
   color: var(--card-bg);
   padding: var(--space-6);
+}
+
+#app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+#app-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+#app-logo {
+  width: 2.5rem;
+}
+
+#app-link h1 {
+  font-size: var(--text-2xl);
+  font-weight: 500;
+  color: var(--bg);
+  margin: 0;
+}
+
+#github-logo {
+  width: 42px;
+  margin: 0;
 }
 
 .card-footer {
