@@ -21,6 +21,7 @@ import {
   toggleTheme,
   createCancelButton,
   handleCopy,
+  handleToogleSecret,
   updateCopyButtonState,
 } from './ui.js';
 import {
@@ -111,7 +112,7 @@ async function init() {
   // Load stored action
   const savedAction = loadLastAction();
   if (dom.actionSelect) dom.actionSelect.value = savedAction;
-    updateActionSettings();
+  // updateActionSettings();
 
   // Load stored language
   const savedLang = loadTargetLanguage();
@@ -126,14 +127,7 @@ async function init() {
   dom.actionSelect?.addEventListener('change', updateActionSettings);
   dom.targetLanguageInput?.addEventListener('input', () => saveTargetLanguage(dom.targetLanguageInput.value));
   dom.authButton?.addEventListener('click', handleAuthClick);
-
-  dom.revealKeyButton?.addEventListener('click', () => {
-    const isPassword = dom.apiKeyInput.type === 'password';
-    dom.apiKeyInput.type = isPassword ? 'text' : 'password';
-    dom.revealKeyButton.textContent = isPassword ? '🙈' : '👁';
-    dom.revealKeyButton.setAttribute('aria-label', isPassword ? 'Hide API key' : 'Reveal API key');
-  });
-
+  dom.revealKeyButton?.addEventListener('click', handleToogleSecret);
   dom.saveKeyButton?.addEventListener('click', handleSaveApiKey);
   dom.clearKeyButton?.addEventListener('click', handleClearApiKey);
   dom.textInput?.addEventListener('input', updateCharCounter);

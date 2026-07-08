@@ -18,110 +18,50 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="text-ai-tools" />
     <meta name="twitter:description" content="Explain, format, improve, and translate text with AI — right in your browser." />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="app-shell">
-      <header class="header">
-        <div class="brand-row">
-          <a class="brand" href="#">text-ai-tools</a>
-          <div class="header-actions">
-            <button id="theme-toggle" class="button icon-button" type="button" aria-label="Toggle dark mode">🌙</button>
-            <a class="github-link" href="https://github.com/nimzozo/text-ai-tools" target="_blank" rel="noreferrer">GitHub</a>
-          </div>
-        </div>
-        <p class="subtitle">Paste text, choose an action, run it, and copy the result.</p>
+    <div id="app-shell">
+      <header id="app-header">
+        <a id="app-link" href="#">
+          <img id="app-logo" src="assets/quill-pen.png" alt="app logo">
+          <h1>Text-ai-tools</h1>
+        </a>
       </header>
 
       <main class="main-grid">
-        <div id="error-banner" class="error-banner" hidden role="alert">
-          <span class="error-message" aria-live="assertive"></span>
-          <button id="error-dismiss" class="error-dismiss" aria-label="Dismiss error">✕</button>
-        </div>
-
-        <section class="card auth-card">
-          <div class="card-header">
-            <h2>Connect or save your API key</h2>
+        <section class="card app-card">
+          <div class="card-footer">
+            Lightweight, browser-based AI toolkit for text workflows—powered by Pollinations.
           </div>
-
-          <div class="status-row">
-            <p id="auth-status" class="auth-status">Not connected</p>
-            <p id="auth-note" class="auth-note">Please connect or paste your Pollinations API key to continue.</p>
-          </div>
-
-          <button id="auth-button" class="button primary auth-connect-btn">Connect with Pollinations</button>
-
-          <div class="divider"><span>or</span></div>
-
-          <label class="field-label" for="api-key-input">API key</label>
-          <div class="input-with-toggle">
-            <input id="api-key-input" type="password" placeholder="sk_..." autocomplete="on" />
-            <button id="reveal-key-button" class="toggle-visibility" type="button" aria-label="Reveal API key">👁</button>
-          </div>
-
-          <div class="button-row">
-            <button id="save-key-button" class="button secondary" type="button">Save key</button>
-            <button id="clear-key-button" class="button secondary" type="button">Clear</button>
-          </div>
-
-          <p class="auth-footnote">Your key is stored in your browser's local storage only.</p>
         </section>
 
-        <section id="tool-content" class="card tool-card" hidden>
-          <div class="card-header">
-            <h2>Enter text and choose an action</h2>
-          </div>
+        <section class="card auth-card">
+          <div id="auth-form">
+            <div id="auth-header">
+              <h2>Have a Pollinations account?</h2>
+              <p>Enter your API key to access powerful AI tools.</p>
+            </div>
 
-          <form id="tool-form" class="tool-form">
-            <label class="field-label" for="input-text">Input text</label>
-          <textarea id="input-text" rows="10" placeholder="Paste your text here..."></textarea>
-          <div class="textarea-footer">
-            <span id="char-counter" class="char-counter">0 characters · 0 words</span>
-            <span id="char-warning" class="char-warning" hidden>Approaching size limit</span>
-          </div>
-
-            <div class="field-group">
-              <div class="field-block">
-                <label class="field-label" for="tool-action">Action</label>
-                <select id="tool-action">
-                  <option value="explain">Explain</option>
-                  <option value="format">Format</option>
-                  <option value="improve">Improve</option>
-                  <option value="translate">Translate</option>
-                </select>
+            <div id="api-key-form">
+              <div class="input-with-toggle">
+                <input id="api-key-input" type="password" placeholder="sk_xxx" autocomplete="on" />
+                <button id="reveal-key-button" aria-label="Reveal API key">
+                  <img id="eye-image" src="assets/eye.png" alt="eye">
+                </button>
               </div>
-
-              <div class="field-block" id="translate-language-row">
-                <label class="field-label" for="target-language">Target language</label>
-                <input id="target-language" type="text" placeholder="English" />
-              </div>
+              <button id="login-button" class="button primary-button">Log in</button>
             </div>
 
-            <p id="action-description" class="action-description">Create a concise summary of the text.</p>
-
-            <div class="run-row">
-              <button id="run-button" class="button primary" type="submit">Run</button>
-              <kbd class="shortcut-hint">⌘/Ctrl+Enter</kbd>
-            </div>
-          </form>
-
-          <div class="result-panel">
-            <div class="panel-header">
-              <h2 class="visually-hidden">Output result</h2>
-            </div>
-            <div id="output-display" class="output-display" aria-live="polite" role="region" aria-label="Output result"></div>
-            <div class="output-footer">
-              <span id="output-hint" class="output-hint">Results appear after processing.</span>
-              <button id="copy-button" class="button secondary" type="button">Copy</button>
-            </div>
+            <div class="divider"><span>or continue with</span></div>
+            <button id="auth-button" class="button secondary-button">
+              <img id="auth-logo" src="assets/pollinations-logo.svg" alt="Pollinations logo">Pollinations
+            </button>
+            <p class="auth-footnote">Your key is stored in your browser's local storage only.</p>
           </div>
         </section>
       </main>
-
-      <footer class="footer">
-        <p>Powered by Pollinations • Lightweight AI text tools</p>
-      </footer>
     </div>
 
     <script src="js/app.js" type="module"></script>

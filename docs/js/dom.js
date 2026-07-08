@@ -5,6 +5,7 @@ export const authStatus = $('#auth-status');
 export const authNote = $('#auth-note');
 export const apiKeyInput = $('#api-key-input');
 export const revealKeyButton = $('#reveal-key-button');
+export const eyeImage = $('#eye-image');
 export const saveKeyButton = $('#save-key-button');
 export const clearKeyButton = $('#clear-key-button');
 export const charCounter = $('#char-counter');

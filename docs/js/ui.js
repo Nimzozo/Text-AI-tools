@@ -30,16 +30,16 @@ export function clearError() {
 }
 
 export function updateActionSettings() {
-  const action = dom.actionSelect.value;
-  dom.targetLanguageRow.hidden = action !== 'translate';
+  // const action = dom.actionSelect.value;
+  // dom.targetLanguageRow.hidden = action !== 'translate';
   const descriptions = {
     explain: 'Create a concise summary of the text.',
     format: 'Rewrite the text with Markdown formatting, proper punctuation, and clear structure.',
     improve: 'Suggest improvements for clarity, grammar, tone, and organization while keeping the meaning intact.',
     translate: 'Translate the text into your selected language while keeping the meaning intact.',
   };
-  dom.actionDescription.textContent = descriptions[action] || '';
-  saveLastAction(action);
+  // dom.actionDescription.textContent = descriptions[action] || '';
+  // saveLastAction(action);
 }
 
 export function updateCharCounter() {
@@ -93,6 +93,13 @@ export function createCancelButton(onCancel) {
   btn.type = 'button';
   btn.addEventListener('click', onCancel);
   return btn;
+}
+
+export function handleToogleSecret() {
+  const isPassword = dom.apiKeyInput.type === 'password';
+  dom.apiKeyInput.type = isPassword ? 'text' : 'password';
+  dom.eyeImage.setAttribute('src', isPassword ? 'assets/invisible.png' : 'assets/eye.png');
+  dom.revealKeyButton.setAttribute('aria-label', isPassword ? 'Hide API key' : 'Reveal API key');
 }
 
 export function handleCopy() {
