@@ -148,7 +148,7 @@ button, input {
 .app-card {
   display: grid;
   grid-template-rows: 7fr 2fr;
-  background-image: url('assets/man-writing.jpg');
+  background-image: url('assets/writing-quill-pen.jpg');
   background-size: 100% 100%;
   background-repeat: no-repeat;
   color: var(--card-bg);
@@ -332,7 +332,13 @@ button:focus-visible {
 @media (max-width: 720px) {
   .main-grid {
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
   }
+
+  .app-card {
+    background-size: 100%;
+  }
+
   .auth-card {
     grid-template-columns: 1fr 2fr 1fr;
   }
