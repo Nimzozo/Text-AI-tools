@@ -145,6 +145,29 @@ button, input {
   background: var(--card-bg);
 }
 
+.app-card {
+  display: grid;
+  grid-template-rows: 7fr 2fr;
+  background-image: url('assets/man-writing.jpg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  color: var(--card-bg);
+  padding: var(--space-6);
+}
+
+.card-footer {
+  grid-row-start: 2;
+  font-weight: 600;
+  font-size: var(--text-xl);
+  line-height: var(--leading-normal);
+}
+
+.auth-card {
+  display: grid;
+  grid-template: auto / 3fr 4fr 3fr;
+  text-align: center;
+}
+
 #auth-header {
   margin-bottom: var(--space-4);
   padding-bottom: var(--space-3);
@@ -162,26 +185,6 @@ button, input {
   font-size:  var(--text-xs);
   margin: var(--space-2) var(--space-2) 0;
   line-height: var(--leading-normal);
-}
-
-.app-card {
-  display: grid;
-  grid-template-rows: 7fr 2fr;
-  background-image: url('assets/man-writing.jpg');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  color: var(--card-bg);
-  padding: var(--space-6);
-}
-
-.card-footer {
-  grid-row-start: 2;
-}
-
-.auth-card {
-  display: grid;
-  grid-template: auto / 3fr 4fr 3fr;
-  text-align: center;
 }
 
 #auth-form {
