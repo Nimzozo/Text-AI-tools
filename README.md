@@ -65,7 +65,7 @@ Then open `http://localhost:8000` in your browser.
 ```
 docs/
 ├── index.html          # Main HTML page
-├── style.css           # All styles (light + dark theme via CSS custom properties)
+├── style.css           # All styles
 ├── favicon.svg         # Favicon
 └── js/
     ├── config.js       # App constants (API endpoint, storage keys, limits)
@@ -74,7 +74,7 @@ docs/
     ├── api.js          # Pollinations API client (streaming + non-streaming)
     ├── auth.js         # OAuth flow and API key management
     ├── prompts.js      # Prompt construction and output validation
-    ├── ui.js           # UI helpers (error banner, theme, counters, copy)
+    ├── ui.js           # UI helpers (error banner, counters, copy)
     └── app.js          # Main app logic and event wiring
 ```
 

@@ -24,14 +24,14 @@
   <body>
     <div id="app-shell">
       <main class="main-grid">
-        <section class="card app-card">
+        <section id="app-card" class="card">
           <div id="app-header">
             <a id="app-link" href="#">
               <img id="app-logo" src="assets/quill-pen.png" alt="app logo">
               <h1>Text-ai-tools</h1>
             </a>
             <a id="github-link" href="https://github.com/Nimzozo/text-ai-tools">
-              <img id="github-logo" src="assets/github-64.png" alt="github logo">  
+              <img id="github-logo" src="assets/github-64.png" alt="Github logo">  
             </a>
           </div>
           <div class="card-footer">
@@ -39,7 +39,7 @@
           </div>
         </section>
 
-        <section class="card auth-card">
+        <section id="auth-card" class="card">
           <div id="auth-form">
             <div id="auth-header">
               <h2>Have a Pollinations account?</h2>
@@ -47,7 +47,7 @@
             </div>
 
             <div id="api-key-form">
-              <div id="error-banner" role="alert" hidden>
+              <div id="error-banner" role="alert" class="dismissed">
                 <span id="error-message" aria-live="assertive"></span>
               </div>
               <div class="input-with-toggle">

@@ -118,7 +118,7 @@ button, input {
   background: var(--card-bg);
 }
 
-.app-card {
+#app-card {
   display: grid;
   grid-template-rows: 7fr 2fr;
   background-image: url('assets/writing-quill-pen.jpg');
@@ -163,7 +163,7 @@ button, input {
   line-height: var(--leading-normal);
 }
 
-.auth-card {
+#auth-card {
   display: grid;
   grid-template: auto / 3fr 4fr 3fr;
   text-align: center;
@@ -224,7 +224,11 @@ button, input {
   }
 }
 
-#error-banner.dismissed {
+.disappear {
+  animation: slideOut 1s ease-out;
+}
+
+.dismissed {
   display: none;
 }
 
@@ -377,17 +381,17 @@ button:focus-visible {
     grid-template-rows: 1fr 1fr;
   }
 
-  .app-card {
+  #app-card {
     background-size: 100%;
   }
 
-  .auth-card {
+  #auth-card {
     grid-template-columns: 1fr 2fr 1fr;
   }
 }
 
 @media (max-width: 480px) {
-  .auth-card {
+  #auth-card {
     grid-template-columns: 1fr 6fr 1fr;
   }
 }
