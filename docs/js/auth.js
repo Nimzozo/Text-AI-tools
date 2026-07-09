@@ -84,11 +84,11 @@ export async function saveApiKey(key) {
   setAuthStatus(key);
 }
 
-export async function handleSaveApiKey() {
-  clearError();
+export async function handleLoginClick() {
+  // clearError();
   const key = dom.apiKeyInput?.value.trim() || '';
   if (!key) {
-    showError('Please enter an API key before saving.');
+    showError('Please enter a valid API key.');
     return;
   }
   saveAuthMethod('apiKey');

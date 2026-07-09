@@ -15,18 +15,15 @@ export function showError(message) {
     dom.errorBanner.appendChild(msg);
   }
   msg.textContent = text;
+  dom.errorBanner.className = '';
   dom.errorBanner.hidden = false;
-  dom.errorBanner.classList.toggle('short', text.length <= 80 && !text.includes('\n'));
-  dom.errorBanner.title = text;
+  setTimeout(clearError, 4000);
 }
 
 export function clearError() {
   if (!dom.errorBanner) return;
-  dom.errorBanner.hidden = true;
-  const msg = dom.errorBanner.querySelector('.error-message');
-  if (msg) msg.textContent = '';
-  dom.errorBanner.classList.remove('short');
-  dom.errorBanner.removeAttribute('title');
+  dom.errorBanner.className = 'dismissed';
+
 }
 
 export function updateActionSettings() {

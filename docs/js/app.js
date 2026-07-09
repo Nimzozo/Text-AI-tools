@@ -26,7 +26,7 @@ import {
 } from './ui.js';
 import {
   loadApiKey,
-  handleSaveApiKey,
+  handleLoginClick,
   handleClearApiKey,
   handleAuthClick,
 } from './auth.js';
@@ -128,7 +128,7 @@ async function init() {
   dom.targetLanguageInput?.addEventListener('input', () => saveTargetLanguage(dom.targetLanguageInput.value));
   dom.authButton?.addEventListener('click', handleAuthClick);
   dom.revealKeyButton?.addEventListener('click', handleToogleSecret);
-  dom.saveKeyButton?.addEventListener('click', handleSaveApiKey);
+  dom.loginButton?.addEventListener('click', handleLoginClick);
   dom.clearKeyButton?.addEventListener('click', handleClearApiKey);
   dom.textInput?.addEventListener('input', updateCharCounter);
   dom.themeToggle?.addEventListener('click', toggleTheme);

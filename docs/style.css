@@ -199,7 +199,7 @@ button, input {
   border: 1px solid var(--error-border);
   box-shadow: var(--shadow);
   line-height: var(--leading-normal);
-  animation: slideIn 200ms ease-out;
+  animation: slideIn 0.2s ease-out, slideOut 0.2s ease-out 3.8s;
 }
 
 @keyframes slideIn {
@@ -211,6 +211,21 @@ button, input {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+#error-banner.dismissed {
+  display: none;
 }
 
 #auth-form {
